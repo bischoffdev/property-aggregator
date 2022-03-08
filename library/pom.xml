@@ -15,6 +15,7 @@
         <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
         <checkstyle.version>9.3</checkstyle.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <tinylog-impl.version>2.4.0-M2</tinylog-impl.version>
     </properties>
 
     <dependencies>
@@ -23,6 +24,11 @@
             <artifactId>junit-jupiter</artifactId>
             <version>${junit-jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-impl</artifactId>
+            <version>${tinylog-impl.version}</version>
         </dependency>
     </dependencies>
 
@@ -41,7 +47,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>Check code style of trupi tests</id>
+                        <id>Check code style</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>check</goal>
