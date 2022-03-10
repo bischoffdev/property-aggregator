@@ -1,4 +1,4 @@
 /**
- * This package contains all property related classes.
+ * This package contains the property aggregator.
  */
 package blog.softwaretester.properties;

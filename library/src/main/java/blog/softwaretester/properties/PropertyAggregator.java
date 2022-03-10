@@ -1,28 +1,59 @@
 package blog.softwaretester.properties;
 
+import blog.softwaretester.properties.propertysource.EnvironmentPropertiesSource;
+import blog.softwaretester.properties.propertysource.PropertiesFileSource;
+import blog.softwaretester.properties.propertysource.SystemPropertiesSource;
 import org.tinylog.Logger;
 
-import java.util.PriorityQueue;
+import java.util.Properties;
 
 public final class PropertyAggregator {
 
-    private PropertyAggregator(final Builder builder) throws Exception {
-        if (builder.priorityQueue.size() == 0) {
-            throw new Exception("No property sources are specified!");
-        }
+    /**
+     * This contains the consolidated Properties.
+     */
+    private final Properties finalProperties;
 
-        Logger.info("Property priorities:");
-        boolean isFirstPropertySource = true;
-        for (PropertySource propertySource : builder.priorityQueue) {
-            if (isFirstPropertySource) {
-                Logger.info("Base property source: {}",
-                        propertySource);
-                isFirstPropertySource = false;
-            } else {
-                Logger.info("...is overridden by property source {}",
-                        propertySource);
-            }
-        }
+    /**
+     * Private constructor that creates the {@link PropertyAggregator} using
+     * the passed in builder.
+     *
+     * @param builder The {@link PropertyAggregator.Builder}.
+     */
+    private PropertyAggregator(final Builder builder) {
+        finalProperties = builder.finalProperties;
+    }
+
+    /**
+     * Get the value of a specific properties key.
+     *
+     * @param key The key of the property.
+     * @return The value of the property.
+     */
+    public String getProperty(final String key) {
+        return (String) finalProperties.get(key);
+    }
+
+    /**
+     * Get all processed properties.
+     *
+     * @return The {@link Properties}.
+     */
+    public Properties getAllProperties() {
+        return finalProperties;
+    }
+
+    /**
+     * Log all processed properties in natural sort order.
+     */
+    public void logAllProperties() {
+        Logger.info("Properties:");
+        getAllProperties()
+                .stringPropertyNames()
+                .stream()
+                .sorted()
+                .forEach(key -> Logger.info("- {} => {}",
+                        key, getProperty(key)));
     }
 
     /**
@@ -30,26 +61,51 @@ public final class PropertyAggregator {
      */
     public static final class Builder {
         /**
-         * The queue of properties sources that override each other.
+         * This contains the consolidated Properties.
          */
-        private final PriorityQueue<PropertySource> priorityQueue =
-                new PriorityQueue<PropertySource>();
+        private final Properties finalProperties = new Properties();
 
         /**
-         * Add a property source to the queue. Each new property source added
-         * has a higher priority than the previous one.
+         * Add a system property source to the queue. Each new property source
+         * added has a higher priority than the previous one.
          *
-         * @param propertySource The property source to add.
          * @return The {@link PropertyAggregator}.
          */
-        public Builder withPropertySource(final PropertySource propertySource) {
-            Logger.debug("Property source {} added.", propertySource);
-            if (!priorityQueue.contains(propertySource)) {
-                priorityQueue.add(propertySource);
-            } else {
-                Logger.info("Property source {} was already added before.",
-                        propertySource);
-            }
+        public Builder withSystemProperties() {
+            Logger.info("Added system properties source.");
+            finalProperties.putAll(
+                    new SystemPropertiesSource()
+                            .getProperties());
+            return this;
+        }
+
+        /**
+         * Add an environment property source to the queue. Each new property
+         * source added has a higher priority than the previous one.
+         *
+         * @return The {@link PropertyAggregator}.
+         */
+        public Builder withEnvironmentProperties() {
+            Logger.info("Added environment properties source.");
+            finalProperties.putAll(
+                    new EnvironmentPropertiesSource()
+                            .getProperties());
+            return this;
+        }
+
+        /**
+         * Add a property file source to the queue. This can be added
+         * multiple times with different property files.
+         *
+         * @param propertiesFilePath The path to the properties file.
+         * @return The {@link PropertyAggregator}.
+         */
+        public Builder withPropertiesFile(final String propertiesFilePath) {
+            PropertiesFileSource propertiesFileSource =
+                    new PropertiesFileSource(propertiesFilePath);
+            Logger.info("Added properties file {}.",
+                    propertiesFilePath);
+            finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
         }
 
@@ -58,7 +114,7 @@ public final class PropertyAggregator {
          *
          * @return The final {@link PropertyAggregator}_
          */
-        public PropertyAggregator build() throws Exception {
+        public PropertyAggregator build() {
             return new PropertyAggregator(this);
         }
     }
