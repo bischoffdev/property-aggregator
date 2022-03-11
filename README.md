@@ -219,10 +219,6 @@ are only specified via default values, use
 propertyAggregator.getPropertiesCount()
 ```
 
-__Note:__ Only this method takes default values into account. Using 
-`propertyAggregator.getAllProperties().size()` returns only the count of 
-properties that are set by property sources!
-
 ## Retrieving all properties
 
 This method returns all processed property keys and values that are set by 
