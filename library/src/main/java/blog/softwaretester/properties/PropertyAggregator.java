@@ -70,6 +70,7 @@ public final class PropertyAggregator {
     /**
      * Builder used to create a {@link PropertyAggregator} instance.
      */
+    @SuppressWarnings("unused")
     public static final class Builder {
         /**
          * This contains the consolidated Properties.
