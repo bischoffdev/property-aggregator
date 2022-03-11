@@ -34,6 +34,12 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:git@github.com:bischoffdev/property-aggregator.git</connection>
+        <developerConnection>scm:git:git@github.com:bischoffdev/property-aggregator.git</developerConnection>
+        <url>https://git@github.com:bischoffdev/property-aggregator.git</url>
+    </scm>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
