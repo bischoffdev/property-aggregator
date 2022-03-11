@@ -27,7 +27,7 @@ public class PropertyAggregatorBuilderTest {
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(3, propertyAggregator.getAllProperties().size());
+        assertEquals(3, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -37,7 +37,7 @@ public class PropertyAggregatorBuilderTest {
                 .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(3, propertyAggregator.getAllProperties().size());
+        assertEquals(3, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class PropertyAggregatorBuilderTest {
                 .withFilteredKeys(filteredKeys)
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(2, propertyAggregator.getAllProperties().size());
+        assertEquals(2, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class PropertyAggregatorBuilderTest {
                 .withFilteredKeys(filteredKeys)
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(0, propertyAggregator.getAllProperties().size());
+        assertEquals(0, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -101,18 +101,15 @@ public class PropertyAggregatorBuilderTest {
         PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withDefaultValues(defaultValues)
-                .withFilteredKeys(List.of("property2"))
+                .withFilteredKeys(List.of("property2", "b"))
                 .build();
         propertyAggregator.logFinalProperties();
-        // Since defaults are stored in a separate list, the size is 1...
-        assertEquals(1, propertyAggregator
-                .getAllProperties()
-                .size());
-        //...whereas the size of all keys (including defaults) is 3
-        assertEquals(3, propertyAggregator.getPropertiesCount());
-        assertEquals("1", propertyAggregator.getProperty("a"));
+        assertEquals(2, propertyAggregator.getPropertiesCount());
+        assertNull(propertyAggregator.getProperty("a"));
         assertEquals("2", propertyAggregator.getProperty("b"));
+        assertNull(propertyAggregator.getProperty("property1"));
         assertEquals("value2_from_test1",
                 propertyAggregator.getProperty("property2"));
+        assertNull(propertyAggregator.getProperty("property3"));
     }
 }

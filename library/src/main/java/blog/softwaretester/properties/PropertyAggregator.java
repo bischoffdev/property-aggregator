@@ -24,16 +24,25 @@ public final class PropertyAggregator {
      * @param builder The {@link PropertyAggregator.Builder}.
      */
     private PropertyAggregator(final Builder builder) {
-        Properties tmpProperties =
-                new Properties(builder.propertyDefaultValues);
+        Properties tmpProperties = new Properties();
 
-        for (Map.Entry<Object, Object> entry
-                : builder.finalProperties.entrySet()) {
+        // Filter properties
+        builder.finalProperties.forEach((key, value) -> {
             if (builder.filteredKeys.size() == 0
-                    || builder.filteredKeys.contains((String) entry.getKey())) {
+                    || builder.filteredKeys.contains((String) key)) {
+                tmpProperties.put(key, value);
+            }
+        });
+
+        // Process default values
+        for (Map.Entry<String, String> entry :
+                builder.propertyDefaultValues.entrySet()) {
+            if (!tmpProperties.contains(entry.getKey())
+                    && builder.filteredKeys.contains(entry.getKey())) {
                 tmpProperties.put(entry.getKey(), entry.getValue());
             }
         }
+
         finalProperties = tmpProperties;
     }
 
@@ -97,7 +106,8 @@ public final class PropertyAggregator {
         /**
          * The list of default values for specific properties.
          */
-        private final Properties propertyDefaultValues = new Properties();
+        private Map<String, String> propertyDefaultValues =
+                Collections.emptyMap();
 
         /**
          * Add a system property source to the queue. Each new property source
@@ -166,12 +176,7 @@ public final class PropertyAggregator {
          */
         public Builder withDefaultValues(
                 final Map<String, String> defaultValues) {
-
-            for (Map.Entry<String, String> entry : defaultValues.entrySet()) {
-                Logger.info(entry.getKey() + " => " + entry.getValue());
-            }
-
-            propertyDefaultValues.putAll(defaultValues);
+            propertyDefaultValues = defaultValues;
             return this;
         }
 
