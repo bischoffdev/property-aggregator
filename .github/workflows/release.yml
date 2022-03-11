@@ -27,7 +27,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish to Apache Maven Central
-        run: mvn deploy --file library/pom.xml -Prelease
+        run: mvn deploy -B --file library/pom.xml -Prelease
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
