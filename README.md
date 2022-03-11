@@ -11,6 +11,25 @@
 
 - [Property Aggregator](#property-aggregator)
 - [Changelog](#changelog)
+- [Maven dependency](#maven-dependency)
+- [Usage](#usage)
+  - [General usage](#general-usage)
+    - [Building a PropertyAggregator](#building-a-propertyaggregator)
+    - [Retrieving properties](#retrieving-properties)
+  - [Specifying property sources](#specifying-property-sources)
+    - [System properties](#system-properties)
+    - [Environment variables](#environment-variables)
+    - [Properties files](#properties-files)
+  - [Specifying property hierarchies](#specifying-property-hierarchies)
+  - [Querying properties](#querying-properties)
+  - [Filtering properties](#filtering-properties)
+  - [Setting default values](#setting-default-values)
+  - [Logging the final properties](#logging-the-final-properties)
+  - [Checking the size of the final properties](#checking-the-size-of-the-final-properties)
+  - [Retrieving all properties](#retrieving-all-properties)
+- [Appendix](#appendix)
+  - [Building](#building)
+  - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
