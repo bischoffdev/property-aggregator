@@ -1,7 +1,9 @@
 name: Publish to Central
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
