@@ -63,7 +63,7 @@ All changes can be seen in the linked [changelog](CHANGELOG.md).
 The Property Aggregator uses a simple builder pattern to specify property 
 sources and options. 
 
-```
+```java
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
     .withEnvironmentProperties()
     .withPropertiesFile("path/to/Test1.properties")
@@ -85,7 +85,7 @@ filters are applied and default values are set.
 
 To query for certain properties, use it as shown below:
 
-```
+```java
 propertyAggregator.getProperty("property1")
 ```
 
@@ -95,7 +95,7 @@ propertyAggregator.getProperty("property1")
 
 To use system properties as a property source, use the `withSystemProperties()` option:
 
-```
+```java
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
     .withSystemProperties()
     .build();
@@ -105,7 +105,7 @@ PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
 
 To use system properties as a property source, use the `withEnvironmentProperties()` option:
 
-```
+```java
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
     .withEnvironmentProperties()
     .build();
@@ -115,7 +115,7 @@ PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
 
 To use system properties as a property source, use the `withPropertiesFile()` option:
 
-```
+```java
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
     .withPropertiesFile("path/to/custom.properties")
     .build();
@@ -132,7 +132,7 @@ _environment properties_.
 
 This example would look like this in code:
 
-```
+```java
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
     .withPropertiesFile("path/to/application.properties")
     .withSystemProperties()
@@ -148,7 +148,7 @@ sources overwrite properties that already exist in a _lower_ one.
 
 To retrieve a property value by key, just use
 
-```
+```java
 String propertyValue = propertyAggregator.getProperty("propertyKey"));
 ```
 
@@ -162,7 +162,7 @@ Especially when using environment properties, they can be quite large and
 not all of them may be relevant for your application. It is possible to add 
 a filter in this case to filter out all properties that are not required.
 
-```
+```java
 List<String> filteredKeys = List.of("property1", "property2");
 
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
@@ -183,7 +183,7 @@ property sources are combined.
 Setting default values can be beneficial if certain properties _must_ exist 
 and can optionally be overwritten.
 
-```
+```java
 Map<String, String> defaults = Map.of("property1", "default1");
 
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
@@ -206,7 +206,7 @@ properties with defaults also exist in the list of filter keys!
 If you want to check the properties after all applied operations, you can 
 log all properties like this:
 
-```
+```java
 propertyAggregator.logFinalProperties();
 ```
 
@@ -215,7 +215,7 @@ propertyAggregator.logFinalProperties();
 In order to get the size of processed properties including properties that 
 are only specified via default values, use 
 
-```
+```java
 propertyAggregator.getPropertiesCount()
 ```
 
@@ -224,7 +224,7 @@ propertyAggregator.getPropertiesCount()
 This method returns all processed property keys and values that are set by 
 property sources or defaults and are not filtered out:
 
-```
+```java
 propertyAggregator.getAllProperties()
 ```
 
