@@ -103,7 +103,7 @@ PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
 
 ### Environment variables
 
-To use system properties as a property source, use the `withEnvironmentProperties()` option:
+To use environment properties as a property source, use the `withEnvironmentProperties()` option:
 
 ```java
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
@@ -113,7 +113,7 @@ PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
 
 ### Properties files
 
-To use system properties as a property source, use the `withPropertiesFile()` option:
+To use a properties file as a property source, use the `withPropertiesFile()` option:
 
 ```java
 PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
