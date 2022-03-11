@@ -1,4 +1,4 @@
-# property-aggregator
+# Property Aggregator
 
 Java property management
 
