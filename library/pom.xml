@@ -55,7 +55,7 @@
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-        <xstream.version>1.4.18</xstream.version>
+        <xstream.version>1.4.19</xstream.version>
     </properties>
 
     <dependencies>
