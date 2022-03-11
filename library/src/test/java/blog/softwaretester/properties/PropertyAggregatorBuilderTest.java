@@ -34,6 +34,16 @@ public class PropertyAggregatorBuilderTest {
     }
 
     @Test
+    public void invalidPropertiesFile() {
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
+                .withPropertiesFile(RESOURCES_DIR + "Nonexistent.properties")
+                .build();
+        propertyAggregator.logFinalProperties();
+        assertEquals(3, propertyAggregator.getPropertiesCount());
+    }
+
+    @Test
     public void validOverride() {
         PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
