@@ -6,6 +6,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.tinylog.Logger;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +22,7 @@ public class PropertyAggregatorBuilderTest {
     }
 
     @Test
-    public void getAllPropertiesTest() {
+    public void getAllProperties() {
         PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .build();
@@ -30,7 +31,7 @@ public class PropertyAggregatorBuilderTest {
     }
 
     @Test
-    public void validOverrideTest() {
+    public void validOverride() {
         PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
@@ -80,5 +81,38 @@ public class PropertyAggregatorBuilderTest {
                 .build();
         propertyAggregator.logFinalProperties();
         assertEquals(0, propertyAggregator.getAllProperties().size());
+    }
+
+    @Test
+    public void validPropertyOverridesDefault() {
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withDefaultValues(Map.of("property1", "default1"))
+                .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
+                .build();
+        propertyAggregator.logFinalProperties();
+        assertEquals("value1_from_test1",
+                propertyAggregator.getProperty("property1"));
+    }
+
+    @Test
+    public void validPropertiesWithDefaultValuesAndFilter() {
+        Map<String, String> defaultValues =
+                Map.of("a", "1", "b", "2");
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
+                .withDefaultValues(defaultValues)
+                .withFilteredKeys(List.of("property2"))
+                .build();
+        propertyAggregator.logFinalProperties();
+        // Since defaults are stored in a separate list, the size is 1...
+        assertEquals(1, propertyAggregator
+                .getAllProperties()
+                .size());
+        //...whereas the size of all keys (including defaults) is 3
+        assertEquals(3, propertyAggregator.getPropertiesCount());
+        assertEquals("1", propertyAggregator.getProperty("a"));
+        assertEquals("2", propertyAggregator.getProperty("b"));
+        assertEquals("value2_from_test1",
+                propertyAggregator.getProperty("property2"));
     }
 }

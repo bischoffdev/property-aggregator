@@ -24,12 +24,14 @@ public final class PropertyAggregator {
      * @param builder The {@link PropertyAggregator.Builder}.
      */
     private PropertyAggregator(final Builder builder) {
-        Properties tmpProperties = builder.finalProperties;
-        if (builder.filteredKeys.size() > 0) {
-            for (Map.Entry<Object, Object> entry : tmpProperties.entrySet()) {
-                if (!builder.filteredKeys.contains((String) entry.getKey())) {
-                    tmpProperties.remove(entry.getKey());
-                }
+        Properties tmpProperties =
+                new Properties(builder.propertyDefaultValues);
+
+        for (Map.Entry<Object, Object> entry
+                : builder.finalProperties.entrySet()) {
+            if (builder.filteredKeys.size() == 0
+                    || builder.filteredKeys.contains((String) entry.getKey())) {
+                tmpProperties.put(entry.getKey(), entry.getValue());
             }
         }
         finalProperties = tmpProperties;
@@ -42,7 +44,17 @@ public final class PropertyAggregator {
      * @return The value of the property.
      */
     public String getProperty(final String key) {
-        return (String) finalProperties.get(key);
+        return finalProperties.getProperty(key);
+    }
+
+    /**
+     * Get the size of all stored property key value pairs including the ones
+     * that are only set by defaults.
+     *
+     * @return The number of stored properties.
+     */
+    public int getPropertiesCount() {
+        return getAllProperties().stringPropertyNames().size();
     }
 
     /**
@@ -85,8 +97,7 @@ public final class PropertyAggregator {
         /**
          * The list of default values for specific properties.
          */
-        private Map<String, String> propertyDefaultValues =
-                Collections.emptyMap();
+        private final Properties propertyDefaultValues = new Properties();
 
         /**
          * Add a system property source to the queue. Each new property source
@@ -155,7 +166,12 @@ public final class PropertyAggregator {
          */
         public Builder withDefaultValues(
                 final Map<String, String> defaultValues) {
-            propertyDefaultValues = defaultValues;
+
+            for (Map.Entry<String, String> entry : defaultValues.entrySet()) {
+                Logger.info(entry.getKey() + " => " + entry.getValue());
+            }
+
+            propertyDefaultValues.putAll(defaultValues);
             return this;
         }
 
