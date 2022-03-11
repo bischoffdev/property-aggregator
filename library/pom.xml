@@ -49,8 +49,8 @@
         <checkstyle.version>9.3</checkstyle.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <tinylog-impl.version>2.4.1</tinylog-impl.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
