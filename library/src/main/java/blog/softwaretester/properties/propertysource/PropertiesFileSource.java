@@ -1,6 +1,5 @@
 package blog.softwaretester.properties.propertysource;
 
-import blog.softwaretester.properties.propertysource.PropertySource;
 import org.tinylog.Logger;
 
 import java.io.FileInputStream;
