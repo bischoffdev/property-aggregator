@@ -14,4 +14,10 @@ Back to [Readme](README.md).
 ### Added
 * Initial commit
 
+## [1.1.0] - UNRELEASED
+
+### Added
+* `withFilter` method to filter the list of final properties
+
 [1.0.0]: https://github.com/bischoffdev/property-aggregator/tree/1.0.0
+[1.1.0]: https://github.com/bischoffdev/property-aggregator/tree/1.1.0

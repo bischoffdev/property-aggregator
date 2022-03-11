@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.tinylog.Logger;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertyAggregatorBuilderTest {
@@ -23,7 +25,7 @@ public class PropertyAggregatorBuilderTest {
         PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .build();
-        propertyAggregator.logAllProperties();
+        propertyAggregator.logFinalProperties();
         assertEquals(3, propertyAggregator.getAllProperties().size());
     }
 
@@ -33,7 +35,7 @@ public class PropertyAggregatorBuilderTest {
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
                 .build();
-        propertyAggregator.logAllProperties();
+        propertyAggregator.logFinalProperties();
         assertEquals(3, propertyAggregator.getAllProperties().size());
     }
 
@@ -45,5 +47,38 @@ public class PropertyAggregatorBuilderTest {
         String pwd = propertyAggregator.getProperty("HOME");
         assertNotNull(pwd);
         assertNotEquals("", pwd);
+    }
+
+    @Test
+    public void validOverriddenEnvironmentProperty() {
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withEnvironmentProperties()
+                .withPropertiesFile(RESOURCES_DIR + "Test3.properties")
+                .build();
+        String pwd = propertyAggregator.getProperty("HOME");
+        assertNotNull(pwd);
+        assertEquals("overridden_home", pwd);
+    }
+
+    @Test
+    public void validFilteredProperties() {
+        List<String> filteredKeys = List.of("property1", "property3");
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
+                .withFilteredKeys(filteredKeys)
+                .build();
+        propertyAggregator.logFinalProperties();
+        assertEquals(2, propertyAggregator.getAllProperties().size());
+    }
+
+    @Test
+    public void validFilteredPropertiesWrongKey() {
+        List<String> filteredKeys = List.of("nonexistent_key");
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
+                .withFilteredKeys(filteredKeys)
+                .build();
+        propertyAggregator.logFinalProperties();
+        assertEquals(0, propertyAggregator.getAllProperties().size());
     }
 }

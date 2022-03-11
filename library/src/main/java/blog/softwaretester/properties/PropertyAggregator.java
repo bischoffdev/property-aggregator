@@ -5,6 +5,9 @@ import blog.softwaretester.properties.propertysource.PropertiesFileSource;
 import blog.softwaretester.properties.propertysource.SystemPropertiesSource;
 import org.tinylog.Logger;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public final class PropertyAggregator {
@@ -21,7 +24,15 @@ public final class PropertyAggregator {
      * @param builder The {@link PropertyAggregator.Builder}.
      */
     private PropertyAggregator(final Builder builder) {
-        finalProperties = builder.finalProperties;
+        Properties tmpProperties = builder.finalProperties;
+        if (builder.filteredKeys.size() > 0) {
+            for (Map.Entry<Object, Object> entry : tmpProperties.entrySet()) {
+                if (!builder.filteredKeys.contains((String) entry.getKey())) {
+                    tmpProperties.remove(entry.getKey());
+                }
+            }
+        }
+        finalProperties = tmpProperties;
     }
 
     /**
@@ -44,9 +55,9 @@ public final class PropertyAggregator {
     }
 
     /**
-     * Log all processed properties in natural sort order.
+     * Log all final processed properties in natural sort order.
      */
-    public void logAllProperties() {
+    public void logFinalProperties() {
         Logger.info("Properties:");
         getAllProperties()
                 .stringPropertyNames()
@@ -64,6 +75,7 @@ public final class PropertyAggregator {
          * This contains the consolidated Properties.
          */
         private final Properties finalProperties = new Properties();
+        private List<String> filteredKeys = Collections.emptyList();
 
         /**
          * Add a system property source to the queue. Each new property source
@@ -106,6 +118,18 @@ public final class PropertyAggregator {
             Logger.info("Added properties file {}.",
                     propertiesFilePath);
             finalProperties.putAll(propertiesFileSource.getProperties());
+            return this;
+        }
+
+        /**
+         * Apply a list of keys to filter the final properties by. All
+         * properties whose key does not match any entry will be removed.
+         *
+         * @param keys A list of property keys to filter by.
+         * @return @return The {@link PropertyAggregator}.
+         */
+        public Builder withFilteredKeys(final List<String> keys) {
+            filteredKeys = keys;
             return this;
         }
 
