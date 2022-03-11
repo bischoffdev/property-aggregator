@@ -158,7 +158,7 @@ public final class PropertyAggregator {
          * properties whose key does not match any entry will be removed.
          *
          * @param keys A list of property keys to filter by.
-         * @return @return The {@link PropertyAggregator}.
+         * @return The {@link PropertyAggregator}.
          */
         public Builder withFilteredKeys(final List<String> keys) {
             filteredKeys = keys;
@@ -172,7 +172,7 @@ public final class PropertyAggregator {
          *
          * @param defaultValues A map containing property keys and their
          *                      default values.
-         * @return @return The {@link PropertyAggregator}.
+         * @return The {@link PropertyAggregator}.
          */
         public Builder withDefaultValues(
                 final Map<String, String> defaultValues) {
