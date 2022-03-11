@@ -2,6 +2,7 @@ package blog.softwaretester.properties;
 
 import blog.softwaretester.properties.propertysource.EnvironmentPropertiesSource;
 import blog.softwaretester.properties.propertysource.PropertiesFileSource;
+import blog.softwaretester.properties.propertysource.PropertySource;
 import blog.softwaretester.properties.propertysource.SystemPropertiesSource;
 import org.tinylog.Logger;
 
@@ -76,6 +77,7 @@ public final class PropertyAggregator {
          */
         private final Properties finalProperties = new Properties();
         private List<String> filteredKeys = Collections.emptyList();
+        private Map<String, String> propertyDefaultValues = Collections.emptyMap();
 
         /**
          * Add a system property source to the queue. Each new property source
@@ -130,6 +132,20 @@ public final class PropertyAggregator {
          */
         public Builder withFilteredKeys(final List<String> keys) {
             filteredKeys = keys;
+            return this;
+        }
+
+        /**
+         * Apply a map of keys with their default values. If a property with
+         * a default value is not set by any {@link PropertySource}, it is
+         * added with its default value.
+         *
+         * @param defaultValues A map containing property keys and their
+         *                      default values.
+         * @return @return The {@link PropertyAggregator}.
+         */
+        public Builder withDefaultValues(final Map<String, String> defaultValues) {
+            propertyDefaultValues = defaultValues;
             return this;
         }
 
