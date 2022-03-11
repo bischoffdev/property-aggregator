@@ -35,8 +35,8 @@ public final class PropertyAggregator {
         });
 
         // Process default values
-        for (Map.Entry<String, String> entry :
-                builder.propertyDefaultValues.entrySet()) {
+        for (Map.Entry<String, String> entry
+                : builder.propertyDefaultValues.entrySet()) {
             if (!tmpProperties.contains(entry.getKey())
                     && builder.filteredKeys.contains(entry.getKey())) {
                 tmpProperties.put(entry.getKey(), entry.getValue());
