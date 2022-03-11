@@ -1,6 +1,6 @@
 ![Property Aggregator Logo](logo.png)
 
-### Aggregate system and environment properties into a single source of truth
+### Aggregate all properties into a single source of truth!
 
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/blog.softwaretester/property-aggregator.svg)](https://repo1.maven.org/maven2/blog/softwaretester/property-aggregator/)
