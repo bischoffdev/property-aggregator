@@ -13,7 +13,8 @@
 
     <name>Property Aggregator</name>
     <description>This project takes care of various properties sources in Java like system and
-        environment variables and properties files.</description>
+        environment variables and properties files.
+    </description>
 
     <inceptionYear>2022</inceptionYear>
 
@@ -157,6 +158,12 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
