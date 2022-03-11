@@ -8,7 +8,10 @@ import org.tinylog.Logger;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class PropertyAggregatorBuilderTest {
 
@@ -38,6 +41,16 @@ public class PropertyAggregatorBuilderTest {
                 .build();
         propertyAggregator.logFinalProperties();
         assertEquals(3, propertyAggregator.getPropertiesCount());
+    }
+
+    @Test
+    public void validSystemProperties() {
+        System.getProperties().put("testProperty1", "testValue1");
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withSystemProperties()
+                .build();
+        String value = propertyAggregator.getProperty("testProperty1");
+        assertEquals("testValue1", value);
     }
 
     @Test
