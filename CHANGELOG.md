@@ -1,3 +1,5 @@
+![Property Aggregator Logo](logo.png)
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
