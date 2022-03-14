@@ -6,14 +6,14 @@
 
     <groupId>blog.softwaretester</groupId>
     <artifactId>property-aggregator</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <url>https://github.com/bischoffdev/property-aggregator</url>
 
     <name>Property Aggregator</name>
     <description>This project takes care of various properties sources in Java like system and
-        environment variables and properties files.
+        environment variables and properties files and combines them into a single source of truth.
     </description>
 
     <inceptionYear>2022</inceptionYear>

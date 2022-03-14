@@ -1,5 +1,6 @@
 package blog.softwaretester.properties;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -7,11 +8,8 @@ import org.tinylog.Logger;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.util.Properties;
+import java.util.function.Predicate;
 
 public class PropertyAggregatorBuilderTest {
 
@@ -30,7 +28,7 @@ public class PropertyAggregatorBuilderTest {
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(3, propertyAggregator.getPropertiesCount());
+        Assertions.assertEquals(3, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -40,7 +38,7 @@ public class PropertyAggregatorBuilderTest {
                 .withPropertiesFile(RESOURCES_DIR + "Nonexistent.properties")
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(3, propertyAggregator.getPropertiesCount());
+        Assertions.assertEquals(3, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -50,7 +48,7 @@ public class PropertyAggregatorBuilderTest {
                 .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(3, propertyAggregator.getPropertiesCount());
+        Assertions.assertEquals(3, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -60,7 +58,7 @@ public class PropertyAggregatorBuilderTest {
                 .withSystemProperties()
                 .build();
         String value = propertyAggregator.getProperty("testProperty1");
-        assertEquals("testValue1", value);
+        Assertions.assertEquals("testValue1", value);
     }
 
     @Test
@@ -69,8 +67,8 @@ public class PropertyAggregatorBuilderTest {
                 .withEnvironmentProperties()
                 .build();
         String pwd = propertyAggregator.getProperty("HOME");
-        assertNotNull(pwd);
-        assertNotEquals("", pwd);
+        Assertions.assertNotNull(pwd);
+        Assertions.assertNotEquals("", pwd);
     }
 
     @Test
@@ -80,8 +78,8 @@ public class PropertyAggregatorBuilderTest {
                 .withPropertiesFile(RESOURCES_DIR + "Test3.properties")
                 .build();
         String pwd = propertyAggregator.getProperty("HOME");
-        assertNotNull(pwd);
-        assertEquals("overridden_home", pwd);
+        Assertions.assertNotNull(pwd);
+        Assertions.assertEquals("overridden_home", pwd);
     }
 
     @Test
@@ -92,7 +90,7 @@ public class PropertyAggregatorBuilderTest {
                 .withFilteredKeys(filteredKeys)
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(2, propertyAggregator.getPropertiesCount());
+        Assertions.assertEquals(2, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -103,7 +101,7 @@ public class PropertyAggregatorBuilderTest {
                 .withFilteredKeys(filteredKeys)
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(0, propertyAggregator.getPropertiesCount());
+        Assertions.assertEquals(0, propertyAggregator.getPropertiesCount());
     }
 
     @Test
@@ -113,7 +111,7 @@ public class PropertyAggregatorBuilderTest {
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals("value1_from_test1",
+        Assertions.assertEquals("value1_from_test1",
                 propertyAggregator.getProperty("property1"));
     }
 
@@ -127,12 +125,36 @@ public class PropertyAggregatorBuilderTest {
                 .withFilteredKeys(List.of("property2", "b"))
                 .build();
         propertyAggregator.logFinalProperties();
-        assertEquals(2, propertyAggregator.getPropertiesCount());
-        assertNull(propertyAggregator.getProperty("a"));
-        assertEquals("2", propertyAggregator.getProperty("b"));
-        assertNull(propertyAggregator.getProperty("property1"));
-        assertEquals("value2_from_test1",
+        Assertions.assertEquals(2, propertyAggregator.getPropertiesCount());
+        Assertions.assertNull(propertyAggregator.getProperty("a"));
+        Assertions.assertEquals("2", propertyAggregator.getProperty("b"));
+        Assertions.assertNull(propertyAggregator.getProperty("property1"));
+        Assertions.assertEquals("value2_from_test1",
                 propertyAggregator.getProperty("property2"));
-        assertNull(propertyAggregator.getProperty("property3"));
+        Assertions.assertNull(propertyAggregator.getProperty("property3"));
+    }
+
+    @Test
+    public void validPropertiesWithKeyFilter() {
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
+                .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
+                .withPropertiesFile(RESOURCES_DIR + "Test3.properties")
+                .build();
+
+        propertyAggregator.logFinalProperties();
+        Predicate<? super Map.Entry<String, String>> predicate =
+                (Predicate<Map.Entry<String, String>>) entry ->
+                        entry.getKey().startsWith("property");
+        Properties properties =
+                propertyAggregator.getPropertiesWithCustomPredicate(predicate);
+        Assertions.assertEquals(3, properties.entrySet().size());
+
+        predicate = (Predicate<Map.Entry<String, String>>) entry ->
+                entry.getValue().endsWith("test2");
+        properties =
+                propertyAggregator.getPropertiesWithCustomPredicate(predicate);
+
+        Assertions.assertEquals(2, properties.entrySet().size());
     }
 }

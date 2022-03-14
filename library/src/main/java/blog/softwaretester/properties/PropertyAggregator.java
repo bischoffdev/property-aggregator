@@ -1,14 +1,18 @@
 package blog.softwaretester.properties;
 
 import blog.softwaretester.properties.propertysource.EnvironmentPropertiesSource;
+import blog.softwaretester.properties.propertysource.PropertiesClassPathSource;
 import blog.softwaretester.properties.propertysource.PropertiesFileSource;
 import blog.softwaretester.properties.propertysource.SystemPropertiesSource;
 import org.tinylog.Logger;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public final class PropertyAggregator {
 
@@ -73,6 +77,30 @@ public final class PropertyAggregator {
      */
     public Properties getAllProperties() {
         return finalProperties;
+    }
+
+    /**
+     * Returns a subset of properties that match a provided predicate.
+     *
+     * @param predicate The filter to apply to the properties.
+     * @return The filtered properties.
+     */
+    public Properties getPropertiesWithCustomPredicate(
+            final Predicate<? super Map.Entry<String, String>> predicate) {
+        @SuppressWarnings("unchecked")
+        HashMap<String, String> propertyMap =
+                finalProperties.entrySet().stream()
+                        .filter((Predicate<? super Map.Entry<Object, Object>>)
+                                predicate)
+                        .collect(
+                                Collectors.toMap(
+                                        e -> String.valueOf(e.getKey()),
+                                        e -> String.valueOf(e.getValue()),
+                                        (prev, next) -> next, HashMap::new
+                                ));
+        Properties filteredProperties = new Properties();
+        filteredProperties.putAll(propertyMap);
+        return filteredProperties;
     }
 
     /**
@@ -148,6 +176,25 @@ public final class PropertyAggregator {
             PropertiesFileSource propertiesFileSource =
                     new PropertiesFileSource(propertiesFilePath);
             Logger.info("Added properties file {}.",
+                    propertiesFilePath);
+            finalProperties.putAll(propertiesFileSource.getProperties());
+            return this;
+        }
+
+        /**
+         * Add a property file source inside the application classpath to the
+         * queue. This can be added multiple times with different property
+         * files.
+         *
+         * @param propertiesFilePath The path to the properties file in the
+         *                           application classpath.
+         * @return The {@link PropertyAggregator}.
+         */
+        public Builder withPropertiesFileInClassPath(
+                final String propertiesFilePath) {
+            PropertiesClassPathSource propertiesFileSource =
+                    new PropertiesClassPathSource(propertiesFilePath);
+            Logger.info("Added properties file in classpath {}.",
                     propertiesFilePath);
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
