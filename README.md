@@ -64,7 +64,8 @@ The Property Aggregator uses a simple builder pattern to specify property
 sources and options. 
 
 ```java
-PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+PropertyAggregator propertyAggregator =
+    new PropertyAggregator.Builder()
     .withEnvironmentProperties()
     .withPropertiesFile("path/to/Test1.properties")
     .build();
@@ -96,7 +97,8 @@ propertyAggregator.getProperty("property1")
 To use system properties as a property source, use the `withSystemProperties()` option:
 
 ```java
-PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+PropertyAggregator propertyAggregator =
+    new PropertyAggregator.Builder()
     .withSystemProperties()
     .build();
 ```
@@ -106,19 +108,45 @@ PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
 To use system properties as a property source, use the `withEnvironmentProperties()` option:
 
 ```java
-PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+PropertyAggregator propertyAggregator =
+    new PropertyAggregator.Builder()
     .withEnvironmentProperties()
     .build();
 ```
 
 ### Properties files
 
+#### Properties file in a fixed path
+
 To use system properties as a property source, use the `withPropertiesFile()` option:
 
 ```java
-PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+PropertyAggregator propertyAggregator = 
+    new PropertyAggregator.Builder()
     .withPropertiesFile("path/to/custom.properties")
     .build();
+```
+
+#### Properties file in the application's class path
+
+If the properties file can be anywhere inside the application's class path, 
+use this method:
+
+```java
+String pathToProperties =
+    getClass()
+    .getClassLoader()
+    .getResource("custom.properties")
+    .getPath()
+
+PropertyAggregator propertyAggregator = 
+    new PropertyAggregator.Builder()
+    .withPropertiesFile(pathToProperties)
+    .build();
+```
+
+
+```java
 ```
 
 ## Specifying property hierarchies
@@ -133,7 +161,8 @@ _environment properties_.
 This example would look like this in code:
 
 ```java
-PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+PropertyAggregator propertyAggregator =
+    new PropertyAggregator.Builder()
     .withPropertiesFile("path/to/application.properties")
     .withSystemProperties()
     .withEnvironmentProperties()
@@ -149,7 +178,8 @@ sources overwrite properties that already exist in a _lower_ one.
 To retrieve a property value by key, just use
 
 ```java
-String propertyValue = propertyAggregator.getProperty("propertyKey"));
+String propertyValue =
+    propertyAggregator.getProperty("propertyKey"));
 ```
 
 This returns the property value from the final processed and filtered set of 
@@ -163,9 +193,11 @@ not all of them may be relevant for your application. It is possible to add
 a filter in this case to filter out all properties that are not required.
 
 ```java
-List<String> filteredKeys = List.of("property1", "property2");
+List<String> filteredKeys =
+    List.of("property1", "property2");
 
-PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+PropertyAggregator propertyAggregator =
+    new PropertyAggregator.Builder()
     .withEnvironmentProperties()
     .withFilteredKeys(filteredKeys)
     .build();
@@ -184,9 +216,11 @@ Setting default values can be beneficial if certain properties _must_ exist
 and can optionally be overwritten.
 
 ```java
-Map<String, String> defaults = Map.of("property1", "default1");
+Map<String, String> defaults =
+    Map.of("property1", "default1");
 
-PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+PropertyAggregator propertyAggregator =
+    new PropertyAggregator.Builder()
     .withDefaultValues(defaults)
     .withPropertiesFile("path/to/application.properties")
     .build();
