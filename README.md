@@ -133,7 +133,7 @@ PropertyAggregator propertyAggregator =
 #### Properties file in the application's class path
 
 If the properties file can be anywhere inside the application's class path, 
-use this method to retrieve the path of the properties file:
+use this method to retrieve them:
 
 ```
 PropertyAggregator propertyAggregator = 
