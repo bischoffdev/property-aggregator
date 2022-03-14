@@ -20,6 +20,8 @@
     - [System properties](#system-properties)
     - [Environment variables](#environment-variables)
     - [Properties files](#properties-files)
+      - [Properties file in a fixed path](#properties-file-in-a-fixed-path)
+      - [Properties file in the application's class path](#properties-file-in-the-applications-class-path)
   - [Specifying property hierarchies](#specifying-property-hierarchies)
   - [Querying properties](#querying-properties)
   - [Filtering properties](#filtering-properties)
