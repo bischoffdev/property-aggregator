@@ -1,6 +1,6 @@
 ![Property Aggregator Logo](logo.png)
 
-### Aggregate all properties into a single source of truth!
+### Simplify Java property handling and create a single source of truth!
 
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/blog.softwaretester/property-aggregator.svg)](https://repo1.maven.org/maven2/blog/softwaretester/property-aggregator/)
@@ -105,7 +105,7 @@ PropertyAggregator propertyAggregator =
 
 ### Environment variables
 
-To use system properties as a property source, use the `withEnvironmentProperties()` option:
+To use environment properties as a property source, use the `withEnvironmentProperties()` option:
 
 ```java
 PropertyAggregator propertyAggregator =
@@ -118,7 +118,7 @@ PropertyAggregator propertyAggregator =
 
 #### Properties file in a fixed path
 
-To use system properties as a property source, use the `withPropertiesFile()` option:
+To use a properties file as a property source, use the `withPropertiesFile()` option:
 
 ```java
 PropertyAggregator propertyAggregator = 
@@ -130,7 +130,7 @@ PropertyAggregator propertyAggregator =
 #### Properties file in the application's class path
 
 If the properties file can be anywhere inside the application's class path, 
-use this method:
+use this method to retrieve the path of the properties file:
 
 ```java
 String pathToProperties =
@@ -143,10 +143,6 @@ PropertyAggregator propertyAggregator =
     new PropertyAggregator.Builder()
     .withPropertiesFile(pathToProperties)
     .build();
-```
-
-
-```java
 ```
 
 ## Specifying property hierarchies
