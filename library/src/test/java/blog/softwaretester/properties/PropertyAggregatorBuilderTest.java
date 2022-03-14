@@ -125,8 +125,8 @@ public class PropertyAggregatorBuilderTest {
                 .withFilteredKeys(List.of("property2", "b"))
                 .build();
         propertyAggregator.logFinalProperties();
-        Assertions.assertEquals(2, propertyAggregator.getPropertiesCount());
-        Assertions.assertNull(propertyAggregator.getProperty("a"));
+        Assertions.assertEquals(3, propertyAggregator.getPropertiesCount());
+        Assertions.assertEquals("1", propertyAggregator.getProperty("a"));
         Assertions.assertEquals("2", propertyAggregator.getProperty("b"));
         Assertions.assertNull(propertyAggregator.getProperty("property1"));
         Assertions.assertEquals("value2_from_test1",

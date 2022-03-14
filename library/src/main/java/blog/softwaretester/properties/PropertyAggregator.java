@@ -41,8 +41,7 @@ public final class PropertyAggregator {
         // Process default values
         for (Map.Entry<String, String> entry
                 : builder.propertyDefaultValues.entrySet()) {
-            if (!tmpProperties.contains(entry.getKey())
-                    && builder.filteredKeys.contains(entry.getKey())) {
+            if (!tmpProperties.stringPropertyNames().contains(entry.getKey())) {
                 tmpProperties.put(entry.getKey(), entry.getValue());
             }
         }
@@ -100,6 +99,7 @@ public final class PropertyAggregator {
                                 ));
         Properties filteredProperties = new Properties();
         filteredProperties.putAll(propertyMap);
+
         return filteredProperties;
     }
 

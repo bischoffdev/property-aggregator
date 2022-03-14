@@ -10,9 +10,18 @@ and this project adheres to
 
 Back to [Readme](README.md).
 
+[1.2.1]: https://github.com/bischoffdev/property-aggregator/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/bischoffdev/property-aggregator/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/bischoffdev/property-aggregator/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/bischoffdev/property-aggregator/tree/v1.0.0
+
+## [1.2.1] - 2022-03-14
+
+### Fixed
+* Setting default without a filter removed all properties with default values
+
+### Changed
+* Default values are set regardless of filters.
 
 ## [1.2.0] - 2022-03-14
 

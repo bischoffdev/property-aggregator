@@ -243,8 +243,8 @@ of the property sources (in this example a properties file) does not include
 value. If, however, "property1" __is__ specified in a property source, the 
 default value is replaced by the actual value. 
 
-__Note:__ If you use defaults and filters together, make sure that 
-properties with defaults also exist in the list of filter keys!
+__Note:__ If you use defaults and filters together, properties with default 
+values are added to the final set regardless of filters!
 
 ## Logging the final properties
 
