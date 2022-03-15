@@ -1,7 +1,7 @@
 package blog.softwaretester.properties.propertysource;
 
+import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 
 public final class PropertiesClassPathSource implements PropertySource {
 
@@ -21,7 +21,7 @@ public final class PropertiesClassPathSource implements PropertySource {
     }
 
     @Override
-    public Properties getProperties() {
+    public Map<String, String> getProperties() {
         String path = Objects.requireNonNull(
                 getClass()
                         .getClassLoader()

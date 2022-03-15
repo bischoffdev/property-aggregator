@@ -1,25 +1,28 @@
 package blog.softwaretester.properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.tinylog.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.function.Predicate;
 
 public class PropertyAggregatorBuilderTest {
+
+    private static final Log LOGGER =
+            LogFactory.getLog(PropertyAggregatorBuilderTest.class);
 
     private static final String RESOURCES_DIR = "src/test/resources/";
 
     @BeforeEach
     public void beforeEach(final TestInfo testInfo) {
-        Logger.info("");
-        Logger.info("Running test [{}]", testInfo.getDisplayName());
-        Logger.info("==================================================");
+        LOGGER.info("");
+        LOGGER.info("Running test: " + testInfo.getDisplayName());
+        LOGGER.info("==================================================");
     }
 
     @Test
@@ -146,7 +149,7 @@ public class PropertyAggregatorBuilderTest {
         Predicate<? super Map.Entry<String, String>> predicate =
                 (Predicate<Map.Entry<String, String>>) entry ->
                         entry.getKey().startsWith("property");
-        Properties properties =
+        Map<String, String> properties =
                 propertyAggregator.getPropertiesWithCustomPredicate(predicate);
         Assertions.assertEquals(3, properties.entrySet().size());
 

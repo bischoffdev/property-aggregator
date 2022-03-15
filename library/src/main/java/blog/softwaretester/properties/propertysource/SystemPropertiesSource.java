@@ -1,10 +1,12 @@
 package blog.softwaretester.properties.propertysource;
 
-import java.util.Properties;
+import blog.softwaretester.properties.PropertyConverter;
+
+import java.util.Map;
 
 public final class SystemPropertiesSource implements PropertySource {
     @Override
-    public Properties getProperties() {
-        return System.getProperties();
+    public Map<String, String> getProperties() {
+        return PropertyConverter.propertiesToMap(System.getProperties());
     }
 }

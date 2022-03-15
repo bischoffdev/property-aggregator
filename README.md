@@ -147,7 +147,7 @@ PropertyAggregator propertyAggregator =
 The power of Property Aggregator is the ability to specify which properties 
 have a higher order than others. This enables hierarchies such as
 
-The applications's standard _property file_ `application.properties` can be 
+The application's standard _property file_ `application.properties` can be 
 overwritten with _system properties_ which in turn can be overwritten with 
 _environment properties_.
 

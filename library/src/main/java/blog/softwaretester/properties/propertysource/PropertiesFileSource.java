@@ -1,13 +1,22 @@
 package blog.softwaretester.properties.propertysource;
 
-import org.tinylog.Logger;
+import blog.softwaretester.properties.PropertyConverter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 public final class PropertiesFileSource implements PropertySource {
+
+    /**
+     * The standard logger.
+     */
+    private static final Log LOGGER =
+            LogFactory.getLog(PropertiesFileSource.class);
 
     /**
      * The path to the properties file.
@@ -24,17 +33,15 @@ public final class PropertiesFileSource implements PropertySource {
     }
 
     @Override
-    public Properties getProperties() {
+    public Map<String, String> getProperties() {
         Properties properties = new Properties();
         try (InputStream propertiesFileInputStream =
                      new FileInputStream(propertiesFilePath)) {
             properties.load(propertiesFileInputStream);
-            Logger.info("...loaded successfully",
-                    propertiesFilePath);
+            LOGGER.info("...loaded successfully");
         } catch (IOException e) {
-            Logger.warn("...ignored: {}",
-                    propertiesFilePath, e.getMessage());
+            LOGGER.warn("...ignored: " + e.getMessage());
         }
-        return properties;
+        return PropertyConverter.propertiesToMap(properties);
     }
 }

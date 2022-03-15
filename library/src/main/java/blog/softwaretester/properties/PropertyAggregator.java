@@ -4,7 +4,8 @@ import blog.softwaretester.properties.propertysource.EnvironmentPropertiesSource
 import blog.softwaretester.properties.propertysource.PropertiesClassPathSource;
 import blog.softwaretester.properties.propertysource.PropertiesFileSource;
 import blog.softwaretester.properties.propertysource.SystemPropertiesSource;
-import org.tinylog.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,9 +18,15 @@ import java.util.stream.Collectors;
 public final class PropertyAggregator {
 
     /**
+     * The standard logger.
+     */
+    private static final Log LOGGER =
+            LogFactory.getLog(PropertyAggregator.class);
+
+    /**
      * This contains the consolidated Properties.
      */
-    private final Properties finalProperties;
+    private final Map<String, String> finalProperties;
 
     /**
      * Private constructor that creates the {@link PropertyAggregator} using
@@ -28,12 +35,12 @@ public final class PropertyAggregator {
      * @param builder The {@link PropertyAggregator.Builder}.
      */
     private PropertyAggregator(final Builder builder) {
-        Properties tmpProperties = new Properties();
+        Map<String, String> tmpProperties = new HashMap<>();
 
         // Filter properties
         builder.finalProperties.forEach((key, value) -> {
             if (builder.filteredKeys.size() == 0
-                    || builder.filteredKeys.contains((String) key)) {
+                    || builder.filteredKeys.contains(key)) {
                 tmpProperties.put(key, value);
             }
         });
@@ -41,7 +48,7 @@ public final class PropertyAggregator {
         // Process default values
         for (Map.Entry<String, String> entry
                 : builder.propertyDefaultValues.entrySet()) {
-            if (!tmpProperties.stringPropertyNames().contains(entry.getKey())) {
+            if (!tmpProperties.containsKey(entry.getKey())) {
                 tmpProperties.put(entry.getKey(), entry.getValue());
             }
         }
@@ -56,7 +63,7 @@ public final class PropertyAggregator {
      * @return The value of the property.
      */
     public String getProperty(final String key) {
-        return finalProperties.getProperty(key);
+        return finalProperties.get(key);
     }
 
     /**
@@ -66,7 +73,7 @@ public final class PropertyAggregator {
      * @return The number of stored properties.
      */
     public int getPropertiesCount() {
-        return getAllProperties().stringPropertyNames().size();
+        return getAllProperties().size();
     }
 
     /**
@@ -74,7 +81,7 @@ public final class PropertyAggregator {
      *
      * @return The {@link Properties}.
      */
-    public Properties getAllProperties() {
+    public Map<String, String> getAllProperties() {
         return finalProperties;
     }
 
@@ -84,36 +91,31 @@ public final class PropertyAggregator {
      * @param predicate The filter to apply to the properties.
      * @return The filtered properties.
      */
-    public Properties getPropertiesWithCustomPredicate(
+    public Map<String, String> getPropertiesWithCustomPredicate(
             final Predicate<? super Map.Entry<String, String>> predicate) {
-        @SuppressWarnings("unchecked")
         HashMap<String, String> propertyMap =
                 finalProperties.entrySet().stream()
-                        .filter((Predicate<? super Map.Entry<Object, Object>>)
-                                predicate)
+                        .filter(predicate)
                         .collect(
                                 Collectors.toMap(
                                         e -> String.valueOf(e.getKey()),
                                         e -> String.valueOf(e.getValue()),
                                         (prev, next) -> next, HashMap::new
                                 ));
-        Properties filteredProperties = new Properties();
-        filteredProperties.putAll(propertyMap);
-
-        return filteredProperties;
+        return propertyMap;
     }
 
     /**
      * Log all final processed properties in natural sort order.
      */
     public void logFinalProperties() {
-        Logger.info("Properties:");
+        LOGGER.info("Properties:");
         getAllProperties()
-                .stringPropertyNames()
+                .keySet()
                 .stream()
                 .sorted()
-                .forEach(key -> Logger.info("- {} => {}",
-                        key, getProperty(key)));
+                .forEach(key -> LOGGER.info("- "
+                        + key + " => " + getProperty(key)));
     }
 
     /**
@@ -124,7 +126,8 @@ public final class PropertyAggregator {
         /**
          * This contains the consolidated Properties.
          */
-        private final Properties finalProperties = new Properties();
+        private final Map<String, String> finalProperties =
+                new HashMap<>();
 
         /**
          * The list of keys to filter properties by.
@@ -144,7 +147,7 @@ public final class PropertyAggregator {
          * @return The {@link PropertyAggregator}.
          */
         public Builder withSystemProperties() {
-            Logger.info("Added system properties source.");
+            LOGGER.info("Added system properties source.");
             finalProperties.putAll(
                     new SystemPropertiesSource()
                             .getProperties());
@@ -158,7 +161,7 @@ public final class PropertyAggregator {
          * @return The {@link PropertyAggregator}.
          */
         public Builder withEnvironmentProperties() {
-            Logger.info("Added environment properties source.");
+            LOGGER.info("Added environment properties source.");
             finalProperties.putAll(
                     new EnvironmentPropertiesSource()
                             .getProperties());
@@ -175,8 +178,8 @@ public final class PropertyAggregator {
         public Builder withPropertiesFile(final String propertiesFilePath) {
             PropertiesFileSource propertiesFileSource =
                     new PropertiesFileSource(propertiesFilePath);
-            Logger.info("Added properties file {}.",
-                    propertiesFilePath);
+            LOGGER.info("Added properties file "
+                    + propertiesFilePath + ".");
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
         }
@@ -194,8 +197,8 @@ public final class PropertyAggregator {
                 final String propertiesFilePath) {
             PropertiesClassPathSource propertiesFileSource =
                     new PropertiesClassPathSource(propertiesFilePath);
-            Logger.info("Added properties file in classpath {}.",
-                    propertiesFilePath);
+            LOGGER.info("Added properties file in classpath "
+                    + propertiesFilePath + ".");
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
         }
