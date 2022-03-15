@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -79,7 +78,7 @@ public final class PropertyAggregator {
     /**
      * Get all processed properties.
      *
-     * @return The {@link Properties}.
+     * @return The processed properties.
      */
     public Map<String, String> getAllProperties() {
         return finalProperties;
@@ -93,16 +92,14 @@ public final class PropertyAggregator {
      */
     public Map<String, String> getPropertiesWithCustomPredicate(
             final Predicate<? super Map.Entry<String, String>> predicate) {
-        HashMap<String, String> propertyMap =
-                finalProperties.entrySet().stream()
-                        .filter(predicate)
-                        .collect(
-                                Collectors.toMap(
-                                        e -> String.valueOf(e.getKey()),
-                                        e -> String.valueOf(e.getValue()),
-                                        (prev, next) -> next, HashMap::new
-                                ));
-        return propertyMap;
+        return finalProperties.entrySet().stream()
+                .filter(predicate)
+                .collect(
+                        Collectors.toMap(
+                                e -> String.valueOf(e.getKey()),
+                                e -> String.valueOf(e.getValue()),
+                                (prev, next) -> next, HashMap::new
+                        ));
     }
 
     /**
