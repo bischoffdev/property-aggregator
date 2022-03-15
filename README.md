@@ -218,7 +218,7 @@ Predicate<? super Map.Entry<String, String>> filterXProperties =
         entry.getKey().startsWith("X");
 
 Properties properties =
-        propertyAggregator.getPropertiesWithCustomPredicate(predicate);
+        propertyAggregator.getPropertiesWithCustomPredicate(filterXProperties);
 ```
 
 ## Setting default values
