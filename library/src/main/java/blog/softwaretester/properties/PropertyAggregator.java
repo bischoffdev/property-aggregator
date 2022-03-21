@@ -48,8 +48,9 @@ public final class PropertyAggregator {
      * @param builder             The {@link Builder}.
      * @param processedProperties The processed properties including defaults.
      */
-    private void addDefaultValues(Builder builder,
-                                  Map<String, String> processedProperties) {
+    private void addDefaultValues(
+            final Builder builder,
+            final Map<String, String> processedProperties) {
         // Process default values
         for (Map.Entry<String, String> entry
                 : builder.propertyDefaultValues.entrySet()) {
@@ -61,7 +62,8 @@ public final class PropertyAggregator {
 
     /**
      * Apply custom predicates to the processed property list.
-     * @param builder The {@link Builder}.
+     *
+     * @param builder            The {@link Builder}.
      * @param filteredProperties The current filtered properties.
      * @return The new property list with the predicates applied.
      */
@@ -85,6 +87,7 @@ public final class PropertyAggregator {
 
     /**
      * Filters out a specific list of property keys.
+     *
      * @param builder The {@link Builder}.
      * @return The processed list of properties.
      */
