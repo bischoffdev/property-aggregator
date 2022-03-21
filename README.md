@@ -25,7 +25,7 @@
   - [Specifying property hierarchies](#specifying-property-hierarchies)
   - [Querying properties](#querying-properties)
   - [Filtering property keys during the build](#filtering-property-keys-during-the-build)
-  - [Speing custom filters during the build](#speing-custom-filters-during-the-build)
+  - [Specifying custom filters during the build](#specifying-custom-filters-during-the-build)
   - [Retrieving subsets of properties from the final list](#retrieving-subsets-of-properties-from-the-final-list)
   - [Setting default values](#setting-default-values)
   - [Logging the final properties](#logging-the-final-properties)
@@ -184,7 +184,7 @@ return value will be `null`.
 
 Especially when using environment properties, they can be quite large and 
 not all of them may be relevant for your application. It is possible to add 
-a filter in this case to filter out all property keys that are not required.
+a filter in this case to remove all properties whose keys are not required.
 
 ```
 List<String> filteredKeys =
@@ -204,10 +204,10 @@ __Note:__ The filter is applied when the final `build()` is called on the
 `PropertyAggregator` builder. That means that it is applied after all 
 property sources are combined.
 
-## Speing custom filters during the build
+## Specifying custom filters during the build
 
 If you want to permanently filter properties in the final list based on 
-custum predicates, you can do it like this:
+_custom_ predicates, you can do it like this:
 
 ```
 Predicate<? super Map.Entry<String, String>> myAppFilter =
