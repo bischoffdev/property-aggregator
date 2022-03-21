@@ -25,6 +25,7 @@
   - [Specifying property hierarchies](#specifying-property-hierarchies)
   - [Querying properties](#querying-properties)
   - [Filtering property keys during the build](#filtering-property-keys-during-the-build)
+  - [Speing custom filters during the build](#speing-custom-filters-during-the-build)
   - [Retrieving subsets of properties from the final list](#retrieving-subsets-of-properties-from-the-final-list)
   - [Setting default values](#setting-default-values)
   - [Logging the final properties](#logging-the-final-properties)
@@ -203,14 +204,32 @@ __Note:__ The filter is applied when the final `build()` is called on the
 `PropertyAggregator` builder. That means that it is applied after all 
 property sources are combined.
 
+## Speing custom filters during the build
+
+If you want to permanently filter properties in the final list based on 
+custum predicates, you can do it like this:
+
+```
+Predicate<? super Map.Entry<String, String>> myAppFilter =
+        (Predicate<Map.Entry<String, String>>) entry ->
+                entry.getKey().startsWith("myApp");
+
+PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        .withPropertiesFile(RESOURCES_DIR + "application.properties")
+        .withCustomPredicate(myAppFilter)
+        .build();
+```
+
+This example permanently alters the property list and only keep properties 
+whose key starts with "myApp".
+
+__Note:__ It is possible to use ´withCustomPredicate´ multiple times.
+
 ## Retrieving subsets of properties from the final list
 
 It is possible to get subsets of properties that match custom predicates. 
 One use case for this is having different sets of properties that have to be 
 passed on to application plugins.
-
-This example would return properties that have keys starting with the letter 
-"X":
 
 ```
 Predicate<? super Map.Entry<String, String>> filterXProperties =
@@ -220,6 +239,9 @@ Predicate<? super Map.Entry<String, String>> filterXProperties =
 Properties properties =
         propertyAggregator.getPropertiesWithCustomPredicate(filterXProperties);
 ```
+
+This example would return properties that have keys starting with the letter
+"X".
 
 ## Setting default values
 

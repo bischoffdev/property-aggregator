@@ -7,6 +7,7 @@ import blog.softwaretester.properties.propertysource.SystemPropertiesSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,25 +35,69 @@ public final class PropertyAggregator {
      * @param builder The {@link PropertyAggregator.Builder}.
      */
     private PropertyAggregator(final Builder builder) {
-        Map<String, String> tmpProperties = new HashMap<>();
+        Map<String, String> processedProperties = filterPropertyKeys(builder);
+        processedProperties =
+                applyCustomPredicates(builder, processedProperties);
+        addDefaultValues(builder, processedProperties);
+        finalProperties = processedProperties;
+    }
 
-        // Filter properties
-        builder.finalProperties.forEach((key, value) -> {
-            if (builder.filteredKeys.size() == 0
-                    || builder.filteredKeys.contains(key)) {
-                tmpProperties.put(key, value);
-            }
-        });
-
+    /**
+     * Adds default values to unset properties.
+     *
+     * @param builder             The {@link Builder}.
+     * @param processedProperties The processed properties including defaults.
+     */
+    private void addDefaultValues(Builder builder,
+                                  Map<String, String> processedProperties) {
         // Process default values
         for (Map.Entry<String, String> entry
                 : builder.propertyDefaultValues.entrySet()) {
-            if (!tmpProperties.containsKey(entry.getKey())) {
-                tmpProperties.put(entry.getKey(), entry.getValue());
+            if (!processedProperties.containsKey(entry.getKey())) {
+                processedProperties.put(entry.getKey(), entry.getValue());
             }
         }
+    }
 
-        finalProperties = tmpProperties;
+    /**
+     * Apply custom predicates to the processed property list.
+     * @param builder The {@link Builder}.
+     * @param filteredProperties The current filtered properties.
+     * @return The new property list with the predicates applied.
+     */
+    private Map<String, String> applyCustomPredicates(
+            final Builder builder,
+            final Map<String, String> filteredProperties) {
+        Map<String, String> processedProperties = filteredProperties;
+        for (Predicate<? super Map.Entry<String, String>> predicate
+                : builder.predicates) {
+            processedProperties = processedProperties.entrySet().stream()
+                    .filter(predicate)
+                    .collect(
+                            Collectors.toMap(
+                                    e -> String.valueOf(e.getKey()),
+                                    e -> String.valueOf(e.getValue()),
+                                    (prev, next) -> next, HashMap::new
+                            ));
+        }
+        return processedProperties;
+    }
+
+    /**
+     * Filters out a specific list of property keys.
+     * @param builder The {@link Builder}.
+     * @return The processed list of properties.
+     */
+    private Map<String, String> filterPropertyKeys(final Builder builder) {
+        final Map<String, String> processedProperties = new HashMap<>();
+        // Filter property keys
+        builder.finalProperties.forEach((key, value) -> {
+            if (builder.filteredKeys.size() == 0
+                    || builder.filteredKeys.contains(key)) {
+                processedProperties.put(key, value);
+            }
+        });
+        return processedProperties;
     }
 
     /**
@@ -125,6 +170,12 @@ public final class PropertyAggregator {
          */
         private final Map<String, String> finalProperties =
                 new HashMap<>();
+
+        /**
+         * The list of passed in predicates to filter the final list by.
+         */
+        private final List<Predicate<? super Map.Entry<String, String>>>
+                predicates = new ArrayList<>();
 
         /**
          * The list of keys to filter properties by.
@@ -209,6 +260,19 @@ public final class PropertyAggregator {
          */
         public Builder withFilteredKeys(final List<String> keys) {
             filteredKeys = keys;
+            return this;
+        }
+
+        /**
+         * Apply a custom filter to the final properties. All properties that
+         * do not match the filter will be removed.
+         *
+         * @param predicate The filter to apply to the properties.
+         * @return The {@link PropertyAggregator}.
+         */
+        public Builder withCustomPredicate(
+                final Predicate<? super Map.Entry<String, String>> predicate) {
+            predicates.add(predicate);
             return this;
         }
 

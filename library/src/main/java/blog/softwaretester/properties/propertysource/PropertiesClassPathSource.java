@@ -1,9 +1,19 @@
 package blog.softwaretester.properties.propertysource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.net.URL;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 public final class PropertiesClassPathSource implements PropertySource {
+
+    /**
+     * The standard logger.
+     */
+    private static final Log LOGGER =
+            LogFactory.getLog(PropertiesClassPathSource.class);
 
     /**
      * The path to the properties file inside the application's class path.
@@ -22,12 +32,14 @@ public final class PropertiesClassPathSource implements PropertySource {
 
     @Override
     public Map<String, String> getProperties() {
-        String path = Objects.requireNonNull(
-                getClass()
-                        .getClassLoader()
-                        .getResource(propertiesFilePath)
-        ).getPath();
-
-        return new PropertiesFileSource(path).getProperties();
+        URL resource = getClass()
+                .getClassLoader()
+                .getResource(propertiesFilePath);
+        if (resource == null) {
+            LOGGER.warn("...ignored: " + propertiesFilePath
+                    + " not found in class path.");
+            return Collections.emptyMap();
+        }
+        return new PropertiesFileSource(resource.getPath()).getProperties();
     }
 }

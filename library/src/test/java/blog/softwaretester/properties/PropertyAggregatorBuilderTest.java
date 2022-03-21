@@ -160,4 +160,37 @@ public class PropertyAggregatorBuilderTest {
 
         Assertions.assertEquals(2, properties.entrySet().size());
     }
+
+    @Test
+    public void validPropertiesWithCustomPredicates() {
+        Predicate<? super Map.Entry<String, String>> predicate1 =
+                (Predicate<Map.Entry<String, String>>) entry ->
+                        entry.getKey().startsWith("property");
+
+        Predicate<? super Map.Entry<String, String>> predicate2 =
+                (Predicate<Map.Entry<String, String>>) entry ->
+                        entry.getValue().endsWith("test2");
+
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
+                .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
+                .withPropertiesFile(RESOURCES_DIR + "Test3.properties")
+                .withCustomPredicate(predicate1)
+                .withCustomPredicate(predicate2)
+                .build();
+
+        Map<String, String> properties = propertyAggregator.getAllProperties();
+        Assertions.assertEquals(2, properties.entrySet().size());
+        Assertions.assertEquals("value1_from_test2",
+                propertyAggregator.getProperty("property1"));
+        Assertions.assertEquals("value2_from_test2",
+                propertyAggregator.getProperty("property2"));
+    }
+
+    @Test
+    public void invalidPropertiesFileInClasspath(){
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+                .withPropertiesFileInClassPath("invalid.properties")
+                .build();
+    }
 }
