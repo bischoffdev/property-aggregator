@@ -223,7 +223,7 @@ PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
 This example permanently alters the property list and only keep properties 
 whose key starts with "myApp".
 
-__Note:__ It is possible to use ´withCustomPredicate´ multiple times.
+__Note:__ It is possible to use `withCustomPredicate` multiple times.
 
 ## Retrieving subsets of properties from the final list
 
