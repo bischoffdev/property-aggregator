@@ -1,8 +1,6 @@
 package blog.softwaretester.properties.propertysource;
 
 import blog.softwaretester.properties.PropertyConverter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,24 +11,19 @@ import java.util.Properties;
 public final class PropertiesFileSource extends PropertySource {
 
     /**
-     * The standard logger.
-     */
-    private static final Log LOGGER =
-            LogFactory.getLog(PropertiesFileSource.class);
-
-    /**
      * The path to the properties file.
      */
     private final String propertiesFilePath;
 
     /**
-     * Constructor for the PropertiesFileSource.
+     * Constructor.
      *
      * @param propertiesFile The path to the properties file.
-     * @param loggingEnabled If true, logs are shown.
+     * @param showLogs If true, logs are shown.
      */
-    public PropertiesFileSource(final String propertiesFile, final boolean loggingEnabled) {
-        super(loggingEnabled);
+    public PropertiesFileSource(
+            final String propertiesFile, final boolean showLogs) {
+        super(showLogs);
         this.propertiesFilePath = propertiesFile;
     }
 

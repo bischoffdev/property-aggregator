@@ -19,20 +19,26 @@ public final class PropertiesClassPathSource extends PropertySource {
      * The path to the properties file inside the application's class path.
      */
     private final String propertiesFilePath;
-    private boolean loggingEnabled;
 
     /**
-     * Constructor for the PropertiesClassPathSource.
+     * Determines if logs should be shown.
+     */
+    private final boolean loggingEnabled;
+
+    /**
+     * Constructor.
      *
      * @param propertiesFile The path to the properties file inside the
      *                       application's class path.
-     * @param loggingEnabled If true, logs are shown.
+     * @param showLogs       If true, logs are shown.
      */
-    public PropertiesClassPathSource(final String propertiesFile, final boolean loggingEnabled) {
-        super(loggingEnabled);
-        this.loggingEnabled = loggingEnabled;
+    public PropertiesClassPathSource(
+            final String propertiesFile, final boolean showLogs) {
+        super(showLogs);
+        this.loggingEnabled = showLogs;
         this.propertiesFilePath = propertiesFile;
-        logInfo("Adding properties file in classpath " + propertiesFilePath + ".");
+        logInfo("Adding properties file in classpath "
+                + propertiesFilePath + ".");
     }
 
     @Override
@@ -45,6 +51,7 @@ public final class PropertiesClassPathSource extends PropertySource {
                     + " not found in class path.");
             return Collections.emptyMap();
         }
-        return new PropertiesFileSource(resource.getPath(), loggingEnabled).getProperties();
+        return new PropertiesFileSource(
+                resource.getPath(), loggingEnabled).getProperties();
     }
 }

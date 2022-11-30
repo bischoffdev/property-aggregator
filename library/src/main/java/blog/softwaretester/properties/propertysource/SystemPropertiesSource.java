@@ -8,10 +8,10 @@ public final class SystemPropertiesSource extends PropertySource {
     /**
      * Constructor.
      *
-     * @param loggingEnabled If true, logs are shown.
+     * @param showLogs If true, logs are shown.
      */
-    public SystemPropertiesSource(boolean loggingEnabled) {
-        super(loggingEnabled);
+    public SystemPropertiesSource(final boolean showLogs) {
+        super(showLogs);
         logInfo("Adding system properties.");
     }
 

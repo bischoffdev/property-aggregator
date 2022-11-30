@@ -70,11 +70,14 @@ sources and options.
 
 ```
 PropertyAggregator propertyAggregator =
-    new PropertyAggregator.Builder()
+    new PropertyAggregator.Builder(true)
     .withEnvironmentProperties()
     .withPropertiesFile("path/to/Test1.properties")
     .build();
 ```
+
+The boolean parameter inside `Builder()` determines if logs should be shown or not.
+The 'false' option can be useful if the PropertyAggregator should be a "silent part" of another library.
 
 In this case, the first property source specified is environment properties 
 (aka environment variables). The second property source is a custom 
@@ -103,7 +106,7 @@ To use system properties as a property source, use the `withSystemProperties()` 
 
 ```
 PropertyAggregator propertyAggregator =
-    new PropertyAggregator.Builder()
+    new PropertyAggregator.Builder(true)
     .withSystemProperties()
     .build();
 ```
@@ -114,7 +117,7 @@ To use environment properties as a property source, use the `withEnvironmentProp
 
 ```
 PropertyAggregator propertyAggregator =
-    new PropertyAggregator.Builder()
+    new PropertyAggregator.Builder(true)
     .withEnvironmentProperties()
     .build();
 ```
@@ -127,7 +130,7 @@ To use a properties file as a property source, use the `withPropertiesFile()` op
 
 ```
 PropertyAggregator propertyAggregator = 
-    new PropertyAggregator.Builder()
+    new PropertyAggregator.Builder(true)
     .withPropertiesFile("path/to/custom.properties")
     .build();
 ```
@@ -139,7 +142,7 @@ use this method to retrieve them:
 
 ```
 PropertyAggregator propertyAggregator = 
-    new PropertyAggregator.Builder()
+    new PropertyAggregator.Builder(true)
     .withPropertiesFileInClassPath(pathToProperties)
     .build();
 ```
@@ -157,7 +160,7 @@ This example would look like this in code:
 
 ```
 PropertyAggregator propertyAggregator =
-    new PropertyAggregator.Builder()
+    new PropertyAggregator.Builder(true)
     .withPropertiesFile("path/to/application.properties")
     .withSystemProperties()
     .withEnvironmentProperties()
@@ -192,7 +195,7 @@ List<String> filteredKeys =
     List.of("property1", "property2");
 
 PropertyAggregator propertyAggregator =
-    new PropertyAggregator.Builder()
+    new PropertyAggregator.Builder(true)
     .withEnvironmentProperties()
     .withFilteredKeys(filteredKeys)
     .build();
@@ -215,7 +218,7 @@ Predicate<? super Map.Entry<String, String>> myAppFilter =
         (Predicate<Map.Entry<String, String>>) entry ->
                 entry.getKey().startsWith("myApp");
 
-PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
         .withPropertiesFile(RESOURCES_DIR + "application.properties")
         .withCustomPredicate(myAppFilter)
         .build();
@@ -254,7 +257,7 @@ Map<String, String> defaults =
     Map.of("property1", "default1");
 
 PropertyAggregator propertyAggregator =
-    new PropertyAggregator.Builder()
+    new PropertyAggregator.Builder(true)
     .withDefaultValues(defaults)
     .withPropertiesFile("path/to/application.properties")
     .build();
@@ -277,6 +280,8 @@ log all properties like this:
 ```
 propertyAggregator.logFinalProperties();
 ```
+
+__Note:__ These logs are always shown regardless of the log settings of the builder!
 
 ## Checking the size of the final properties
 

@@ -6,8 +6,13 @@ import java.util.Map;
 import java.util.Properties;
 
 public final class EnvironmentPropertiesSource extends PropertySource {
-    public EnvironmentPropertiesSource(final boolean loggingEnabled) {
-        super(loggingEnabled);
+    /**
+     * Constructor.
+     *
+     * @param showLogs If true, logs are shown.
+     */
+    public EnvironmentPropertiesSource(final boolean showLogs) {
+        super(showLogs);
         logInfo("Adding environment properties.");
     }
 

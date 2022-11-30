@@ -6,7 +6,7 @@
 
     <groupId>blog.softwaretester</groupId>
     <artifactId>property-aggregator</artifactId>
-    <version>1.4.1</version>
+    <version>1.5.0</version>
     <packaging>jar</packaging>
 
     <url>https://github.com/bischoffdev/property-aggregator</url>
@@ -54,7 +54,7 @@
 
         <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
         <checkstyle.version>9.3</checkstyle.version>
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <junit-jupiter.version>5.9.0</junit-jupiter.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>

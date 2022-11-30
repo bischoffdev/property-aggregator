@@ -240,7 +240,8 @@ public final class PropertyAggregator {
          */
         public Builder withPropertiesFile(final String propertiesFilePath) {
             PropertiesFileSource propertiesFileSource =
-                    new PropertiesFileSource(propertiesFilePath, loggineEnabled);
+                    new PropertiesFileSource(
+                            propertiesFilePath, loggineEnabled);
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
         }
@@ -257,7 +258,8 @@ public final class PropertyAggregator {
         public Builder withPropertiesFileInClassPath(
                 final String propertiesFilePath) {
             PropertiesClassPathSource propertiesFileSource =
-                    new PropertiesClassPathSource(propertiesFilePath, loggineEnabled);
+                    new PropertiesClassPathSource(
+                            propertiesFilePath, loggineEnabled);
 
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
