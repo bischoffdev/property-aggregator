@@ -79,12 +79,12 @@ PropertyAggregator propertyAggregator =
 The boolean parameter inside `Builder()` determines if logs should be shown or not.
 The `false` option can be useful if the PropertyAggregator should be a "silent part" of another library.
 
-In this case, the first property source specified is environment properties 
-(aka environment variables). The second property source is a custom 
-properties file called `Test1.properties` which overrides existing environment 
-properties.
+In this case,
 
-You can specify multiple sources in any order to create your custom 
+1. environment properties (aka environment variables) are loaded first
+2. a `Test1.properties` file is loaded which overrides existing properties from the step before
+
+You can specify multiple sources like this in any order to create your custom 
 property hierarchies.
 
 When the final `build()` method is called, all property sources are combined,
@@ -150,11 +150,13 @@ PropertyAggregator propertyAggregator =
 ## Specifying property hierarchies
 
 The power of Property Aggregator is the ability to specify which properties 
-have a higher order than others. This enables hierarchies such as
+have a higher order than others.
 
-The application's standard _property file_ `application.properties` can be 
-overwritten with _system properties_ which in turn can be overwritten with 
-_environment properties_.
+This enables hierarchies such as:
+
+1. the application's standard _property file_ `application.properties`
+2. this can be overwritten with _system properties_ 
+3. this can be overwritten with _environment properties_.
 
 This example would look like this in code:
 
