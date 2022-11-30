@@ -1,8 +1,6 @@
 package blog.softwaretester.properties.propertysource;
 
 import blog.softwaretester.properties.PropertyConverter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,13 +8,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-public final class PropertiesFileSource implements PropertySource {
-
-    /**
-     * The standard logger.
-     */
-    private static final Log LOGGER =
-            LogFactory.getLog(PropertiesFileSource.class);
+public final class PropertiesFileSource extends PropertySource {
 
     /**
      * The path to the properties file.
@@ -24,23 +16,27 @@ public final class PropertiesFileSource implements PropertySource {
     private final String propertiesFilePath;
 
     /**
-     * Constructor for the PropertiesFileSource.
+     * Constructor.
      *
      * @param propertiesFile The path to the properties file.
+     * @param showLogs If true, logs are shown.
      */
-    public PropertiesFileSource(final String propertiesFile) {
+    public PropertiesFileSource(
+            final String propertiesFile, final boolean showLogs) {
+        super(showLogs);
         this.propertiesFilePath = propertiesFile;
     }
 
     @Override
     public Map<String, String> getProperties() {
         Properties properties = new Properties();
+        logInfo("Loading " + propertiesFilePath + "...");
         try (InputStream propertiesFileInputStream =
                      new FileInputStream(propertiesFilePath)) {
             properties.load(propertiesFileInputStream);
-            LOGGER.info("...loaded successfully");
+            logInfo("...loaded successfully");
         } catch (IOException e) {
-            LOGGER.warn("...ignored: " + e.getMessage());
+            logWarning("...ignored: " + e.getMessage());
         }
         return PropertyConverter.propertiesToMap(properties);
     }

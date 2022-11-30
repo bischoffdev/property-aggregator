@@ -18,16 +18,9 @@ public class PropertyAggregatorBuilderTest {
 
     private static final String RESOURCES_DIR = "src/test/resources/";
 
-    @BeforeEach
-    public void beforeEach(final TestInfo testInfo) {
-        LOGGER.info("");
-        LOGGER.info("Running test: " + testInfo.getDisplayName());
-        LOGGER.info("==================================================");
-    }
-
     @Test
     public void getAllProperties() {
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .build();
         propertyAggregator.logFinalProperties();
@@ -36,7 +29,7 @@ public class PropertyAggregatorBuilderTest {
 
     @Test
     public void invalidPropertiesFile() {
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withPropertiesFile(RESOURCES_DIR + "Nonexistent.properties")
                 .build();
@@ -46,7 +39,7 @@ public class PropertyAggregatorBuilderTest {
 
     @Test
     public void validOverride() {
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
                 .build();
@@ -57,7 +50,7 @@ public class PropertyAggregatorBuilderTest {
     @Test
     public void validSystemProperties() {
         System.getProperties().put("testProperty1", "testValue1");
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withSystemProperties()
                 .build();
         String value = propertyAggregator.getProperty("testProperty1");
@@ -66,7 +59,7 @@ public class PropertyAggregatorBuilderTest {
 
     @Test
     public void validEnvironmentProperties() {
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withEnvironmentProperties()
                 .build();
         String pwd = propertyAggregator.getProperty("HOME");
@@ -76,7 +69,7 @@ public class PropertyAggregatorBuilderTest {
 
     @Test
     public void validOverriddenEnvironmentProperty() {
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withEnvironmentProperties()
                 .withPropertiesFile(RESOURCES_DIR + "Test3.properties")
                 .build();
@@ -88,7 +81,7 @@ public class PropertyAggregatorBuilderTest {
     @Test
     public void validFilteredProperties() {
         List<String> filteredKeys = List.of("property1", "property3");
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withFilteredKeys(filteredKeys)
                 .build();
@@ -99,7 +92,7 @@ public class PropertyAggregatorBuilderTest {
     @Test
     public void validFilteredPropertiesWrongKey() {
         List<String> filteredKeys = List.of("nonexistent_key");
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withFilteredKeys(filteredKeys)
                 .build();
@@ -109,7 +102,7 @@ public class PropertyAggregatorBuilderTest {
 
     @Test
     public void validPropertyOverridesDefault() {
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withDefaultValues(Map.of("property1", "default1"))
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .build();
@@ -122,7 +115,7 @@ public class PropertyAggregatorBuilderTest {
     public void validPropertiesWithDefaultValuesAndFilter() {
         Map<String, String> defaultValues =
                 Map.of("a", "1", "b", "2");
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withDefaultValues(defaultValues)
                 .withFilteredKeys(List.of("property2", "b"))
@@ -139,7 +132,7 @@ public class PropertyAggregatorBuilderTest {
 
     @Test
     public void validPropertiesWithKeyFilter() {
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
                 .withPropertiesFile(RESOURCES_DIR + "Test3.properties")
@@ -171,7 +164,7 @@ public class PropertyAggregatorBuilderTest {
                 (Predicate<Map.Entry<String, String>>) entry ->
                         entry.getValue().endsWith("test2");
 
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
                 .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
                 .withPropertiesFile(RESOURCES_DIR + "Test2.properties")
                 .withPropertiesFile(RESOURCES_DIR + "Test3.properties")
@@ -188,8 +181,8 @@ public class PropertyAggregatorBuilderTest {
     }
 
     @Test
-    public void invalidPropertiesFileInClasspath(){
-        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder()
+    public void invalidPropertiesFileInClasspath() {
+        new PropertyAggregator.Builder(true)
                 .withPropertiesFileInClassPath("invalid.properties")
                 .build();
     }

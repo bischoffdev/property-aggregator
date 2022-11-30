@@ -192,15 +192,28 @@ public final class PropertyAggregator {
                 Collections.emptyMap();
 
         /**
+         * If true, console logs will be shown.
+         */
+        private boolean loggineEnabled;
+
+        /**
+         * Constructor for the Builder.
+         *
+         * @param loggingEnabled If true, logs will be shown.s
+         */
+        public Builder(final boolean loggingEnabled) {
+            this.loggineEnabled = loggingEnabled;
+        }
+
+        /**
          * Add a system property source to the queue. Each new property source
          * added has a higher priority than the previous one.
          *
          * @return The {@link PropertyAggregator}.
          */
         public Builder withSystemProperties() {
-            LOGGER.info("Added system properties source.");
             finalProperties.putAll(
-                    new SystemPropertiesSource()
+                    new SystemPropertiesSource(loggineEnabled)
                             .getProperties());
             return this;
         }
@@ -212,9 +225,8 @@ public final class PropertyAggregator {
          * @return The {@link PropertyAggregator}.
          */
         public Builder withEnvironmentProperties() {
-            LOGGER.info("Added environment properties source.");
             finalProperties.putAll(
-                    new EnvironmentPropertiesSource()
+                    new EnvironmentPropertiesSource(loggineEnabled)
                             .getProperties());
             return this;
         }
@@ -228,9 +240,8 @@ public final class PropertyAggregator {
          */
         public Builder withPropertiesFile(final String propertiesFilePath) {
             PropertiesFileSource propertiesFileSource =
-                    new PropertiesFileSource(propertiesFilePath);
-            LOGGER.info("Added properties file "
-                    + propertiesFilePath + ".");
+                    new PropertiesFileSource(
+                            propertiesFilePath, loggineEnabled);
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
         }
@@ -247,9 +258,9 @@ public final class PropertyAggregator {
         public Builder withPropertiesFileInClassPath(
                 final String propertiesFilePath) {
             PropertiesClassPathSource propertiesFileSource =
-                    new PropertiesClassPathSource(propertiesFilePath);
-            LOGGER.info("Added properties file in classpath "
-                    + propertiesFilePath + ".");
+                    new PropertiesClassPathSource(
+                            propertiesFilePath, loggineEnabled);
+
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
         }
