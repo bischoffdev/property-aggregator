@@ -77,7 +77,7 @@ PropertyAggregator propertyAggregator =
 ```
 
 The boolean parameter inside `Builder()` determines if logs should be shown or not.
-The 'false' option can be useful if the PropertyAggregator should be a "silent part" of another library.
+The `false` option can be useful if the PropertyAggregator should be a "silent part" of another library.
 
 In this case, the first property source specified is environment properties 
 (aka environment variables). The second property source is a custom 
