@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-public final class PropertiesFileSource implements PropertySource {
+public final class PropertiesFileSource extends PropertySource {
 
     /**
      * The standard logger.
@@ -27,20 +27,23 @@ public final class PropertiesFileSource implements PropertySource {
      * Constructor for the PropertiesFileSource.
      *
      * @param propertiesFile The path to the properties file.
+     * @param loggingEnabled If true, logs are shown.
      */
-    public PropertiesFileSource(final String propertiesFile) {
+    public PropertiesFileSource(final String propertiesFile, final boolean loggingEnabled) {
+        super(loggingEnabled);
         this.propertiesFilePath = propertiesFile;
     }
 
     @Override
     public Map<String, String> getProperties() {
         Properties properties = new Properties();
+        logInfo("Loading " + propertiesFilePath + "...");
         try (InputStream propertiesFileInputStream =
                      new FileInputStream(propertiesFilePath)) {
             properties.load(propertiesFileInputStream);
-            LOGGER.info("...loaded successfully");
+            logInfo("...loaded successfully");
         } catch (IOException e) {
-            LOGGER.warn("...ignored: " + e.getMessage());
+            logWarning("...ignored: " + e.getMessage());
         }
         return PropertyConverter.propertiesToMap(properties);
     }

@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
-public final class PropertiesClassPathSource implements PropertySource {
+public final class PropertiesClassPathSource extends PropertySource {
 
     /**
      * The standard logger.
@@ -19,15 +19,20 @@ public final class PropertiesClassPathSource implements PropertySource {
      * The path to the properties file inside the application's class path.
      */
     private final String propertiesFilePath;
+    private boolean loggingEnabled;
 
     /**
      * Constructor for the PropertiesClassPathSource.
      *
      * @param propertiesFile The path to the properties file inside the
      *                       application's class path.
+     * @param loggingEnabled If true, logs are shown.
      */
-    public PropertiesClassPathSource(final String propertiesFile) {
+    public PropertiesClassPathSource(final String propertiesFile, final boolean loggingEnabled) {
+        super(loggingEnabled);
+        this.loggingEnabled = loggingEnabled;
         this.propertiesFilePath = propertiesFile;
+        logInfo("Adding properties file in classpath " + propertiesFilePath + ".");
     }
 
     @Override
@@ -36,10 +41,10 @@ public final class PropertiesClassPathSource implements PropertySource {
                 .getClassLoader()
                 .getResource(propertiesFilePath);
         if (resource == null) {
-            LOGGER.warn("...ignored: " + propertiesFilePath
+            logWarning("...ignored: " + propertiesFilePath
                     + " not found in class path.");
             return Collections.emptyMap();
         }
-        return new PropertiesFileSource(resource.getPath()).getProperties();
+        return new PropertiesFileSource(resource.getPath(), loggingEnabled).getProperties();
     }
 }
