@@ -1,11 +1,13 @@
-![Property Aggregator Logo](logo.png)
-
-### Simplify Java property handling and create a single source of truth!
-
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/blog.softwaretester/property-aggregator.svg)](https://repo1.maven.org/maven2/blog/softwaretester/property-aggregator/)
 [![Run Unit Tests](https://github.com/bischoffdev/property-aggregator/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/bischoffdev/property-aggregator/actions/workflows/unit-tests.yml)
-[![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/bischoffdev)
+[![Mastodon Follow](https://img.shields.io/mastodon/follow/109619788534969171?domain=https%3A%2F%2Fhachyderm.io&style=social)](https://hachyderm.io/invite/acrCWhtk)
+
+![Property Aggregator Logo](logo.png)
+
+# Property Aggregator
+
+_Simplify Java property handling and create a single source of truth!_
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
