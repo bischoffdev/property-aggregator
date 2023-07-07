@@ -5,8 +5,6 @@
 
 ![Property Aggregator Logo](logo.png)
 
-# Property Aggregator
-
 _Simplify Java property handling and create a single source of truth!_
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
