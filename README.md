@@ -1,7 +1,7 @@
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/benjamin-bischoff/)
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/blog.softwaretester/property-aggregator.svg)](https://repo1.maven.org/maven2/blog/softwaretester/property-aggregator/)
 [![Run Unit Tests](https://github.com/bischoffdev/property-aggregator/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/bischoffdev/property-aggregator/actions/workflows/unit-tests.yml)
-[![Mastodon Follow](https://img.shields.io/mastodon/follow/109619788534969171?domain=https%3A%2F%2Fhachyderm.io&style=social)](https://hachyderm.io/invite/acrCWhtk)
 
 ![Property Aggregator Logo](logo.png)
 
