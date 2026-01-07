@@ -95,8 +95,8 @@ public final class PropertyAggregator {
         final Map<String, String> processedProperties = new HashMap<>();
         // Filter property keys
         builder.finalProperties.forEach((key, value) -> {
-            if (builder.filteredKeys.size() == 0
-                    || builder.filteredKeys.contains(key)) {
+            if (builder.filteredKeys.isEmpty()
+                || builder.filteredKeys.contains(key)) {
                 processedProperties.put(key, value);
             }
         });
@@ -114,7 +114,7 @@ public final class PropertyAggregator {
     }
 
     /**
-     * Get the size of all stored property key value pairs including the ones
+     * Get the size of all stored property key value pairs, including the ones
      * that are only set by defaults.
      *
      * @return The number of stored properties.
@@ -194,7 +194,7 @@ public final class PropertyAggregator {
         /**
          * If true, console logs will be shown.
          */
-        private boolean loggineEnabled;
+        private final boolean isLoggingEnabled;
 
         /**
          * Constructor for the Builder.
@@ -202,7 +202,7 @@ public final class PropertyAggregator {
          * @param loggingEnabled If true, logs will be shown.s
          */
         public Builder(final boolean loggingEnabled) {
-            this.loggineEnabled = loggingEnabled;
+            isLoggingEnabled = loggingEnabled;
         }
 
         /**
@@ -213,7 +213,7 @@ public final class PropertyAggregator {
          */
         public Builder withSystemProperties() {
             finalProperties.putAll(
-                    new SystemPropertiesSource(loggineEnabled)
+                    new SystemPropertiesSource(isLoggingEnabled)
                             .getProperties());
             return this;
         }
@@ -226,7 +226,7 @@ public final class PropertyAggregator {
          */
         public Builder withEnvironmentProperties() {
             finalProperties.putAll(
-                    new EnvironmentPropertiesSource(loggineEnabled)
+                    new EnvironmentPropertiesSource(isLoggingEnabled)
                             .getProperties());
             return this;
         }
@@ -241,7 +241,7 @@ public final class PropertyAggregator {
         public Builder withPropertiesFile(final String propertiesFilePath) {
             PropertiesFileSource propertiesFileSource =
                     new PropertiesFileSource(
-                            propertiesFilePath, loggineEnabled);
+                            propertiesFilePath, isLoggingEnabled);
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
         }
@@ -259,7 +259,7 @@ public final class PropertyAggregator {
                 final String propertiesFilePath) {
             PropertiesClassPathSource propertiesFileSource =
                     new PropertiesClassPathSource(
-                            propertiesFilePath, loggineEnabled);
+                            propertiesFilePath, isLoggingEnabled);
 
             finalProperties.putAll(propertiesFileSource.getProperties());
             return this;
@@ -291,9 +291,9 @@ public final class PropertyAggregator {
         }
 
         /**
-         * Apply a map of keys with their default values. If a property with
-         * a default value is not set by any property source, it is
-         * added with its default value.
+         * Apply a map of keys with their default values.
+         * If no property source sets a value for a property with
+         * a default value, it is added with its default value.
          *
          * @param defaultValues A map containing property keys and their
          *                      default values.
