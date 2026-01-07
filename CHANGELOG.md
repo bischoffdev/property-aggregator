@@ -23,7 +23,6 @@ Back to [Readme](README.md).
 
 ### Changed
 * Updated dependencies
-  * 
 
 ## [1.5.0] - 2022-11-30
 
