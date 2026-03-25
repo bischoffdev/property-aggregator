@@ -12,7 +12,7 @@ public final class SystemPropertiesSource extends PropertySource {
      */
     public SystemPropertiesSource(final boolean showLogs) {
         super(showLogs);
-        logInfo("Adding system properties.");
+        logInfo("Loading of system properties: successful");
     }
 
     @Override

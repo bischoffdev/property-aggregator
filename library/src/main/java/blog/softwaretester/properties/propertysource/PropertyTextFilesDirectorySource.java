@@ -16,40 +16,50 @@ import java.util.stream.Collectors;
  */
 public final class PropertyTextFilesDirectorySource extends PropertySource {
 
+    /**
+     * The expected file suffix for property files.
+     **/
     private static final String FILE_SUFFIX = ".txt";
 
-    private final String directoryPath;
+    /**
+     * The directory path containing .txt files and the text file parsing mode.
+     **/
+    private final String path;
+
+    /**
+     * The text file parsing mode.
+     */
     private final TextFileValueMode mode;
 
     /**
      * Constructor.
      *
      * @param directoryPath The directory path containing .txt files.
-     * @param mode          The text file parsing mode.
+     * @param textFileValueMode          The text file parsing mode.
      * @param showLogs      If true, logs are shown.
      */
     public PropertyTextFilesDirectorySource(
             final String directoryPath,
-            final TextFileValueMode mode,
+            final TextFileValueMode textFileValueMode,
             final boolean showLogs) {
         super(showLogs);
-        this.directoryPath = directoryPath;
-        this.mode = mode;
+        this.path = directoryPath;
+        this.mode = textFileValueMode;
         logInfo("Adding text file properties from " + directoryPath + ".");
     }
 
     @Override
     public Map<String, String> getProperties() {
-        Path path = Path.of(directoryPath);
-        if (!Files.isDirectory(path)) {
-            logWarning("...ignored: " + directoryPath
-                    + " is not a readable directory.");
+        Path sourcePath = Path.of(this.path);
+        if (!Files.isDirectory(sourcePath)) {
+            logWarning("Loading of " + this.path
+                    + " ignored: not a readable directory.");
             return Map.of();
         }
 
         Map<String, String> properties = new HashMap<>();
         try (DirectoryStream<Path> stream =
-                     Files.newDirectoryStream(path, "*" + FILE_SUFFIX)) {
+                     Files.newDirectoryStream(sourcePath, "*" + FILE_SUFFIX)) {
             for (Path file : stream) {
                 if (!Files.isRegularFile(file)) {
                     continue;
@@ -59,14 +69,23 @@ public final class PropertyTextFilesDirectorySource extends PropertySource {
                         0, fileName.length() - FILE_SUFFIX.length());
                 properties.put(key, readValue(file));
             }
+            logInfo("Loading of " + this.path + ": successful");
         } catch (IOException e) {
-            logWarning("...ignored: " + e.getMessage());
+            logWarning("Loading of " + this.path
+                    + " ignored: " + e.getMessage());
             return Map.of();
         }
 
         return properties;
     }
 
+    /**
+     * Read a single file and convert it to a property value.
+     *
+     * @param file The file to read.
+     * @return The parsed value based on the configured mode.
+     * @throws IOException If the file cannot be read.
+     */
     private String readValue(final Path file) throws IOException {
         if (mode == TextFileValueMode.RAW) {
             return Files.readString(file, StandardCharsets.UTF_8);

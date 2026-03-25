@@ -10,5 +10,5 @@ build:
 	./mvnw clean install --file library/pom.xml
 
 demo-full: build
-	export DEMO_ENV="env_value" && ./mvnw -q exec:java --file examples/full-demo/pom.xml
+	export DEMO_ENV="env_value" && ./mvnw -q -DskipTests compile exec:java --file examples/full-demo/pom.xml
 .PHONY: demo-full

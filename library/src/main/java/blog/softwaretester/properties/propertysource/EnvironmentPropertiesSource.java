@@ -13,7 +13,7 @@ public final class EnvironmentPropertiesSource extends PropertySource {
      */
     public EnvironmentPropertiesSource(final boolean showLogs) {
         super(showLogs);
-        logInfo("Adding environment properties.");
+        logInfo("Loading of environment properties: successful");
     }
 
     @Override

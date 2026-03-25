@@ -37,8 +37,6 @@ public final class PropertiesClassPathSource extends PropertySource {
         super(showLogs);
         this.loggingEnabled = showLogs;
         this.propertiesFilePath = propertiesFile;
-        logInfo("Adding properties file in classpath "
-                + propertiesFilePath + ".");
     }
 
     @Override
@@ -47,11 +45,13 @@ public final class PropertiesClassPathSource extends PropertySource {
                 .getClassLoader()
                 .getResource(propertiesFilePath);
         if (resource == null) {
-            logWarning("...ignored: " + propertiesFilePath
-                    + " not found in class path.");
+            logWarning("Loading of " + propertiesFilePath
+                    + " ignored: not found in class path.");
             return Collections.emptyMap();
         }
-        return new PropertiesFileSource(
-                resource.getPath(), loggingEnabled).getProperties();
+        Map<String, String> properties = new PropertiesFileSource(
+                resource.getPath(), false).getProperties();
+        logInfo("Loading of " + propertiesFilePath + ": successful");
+        return properties;
     }
 }

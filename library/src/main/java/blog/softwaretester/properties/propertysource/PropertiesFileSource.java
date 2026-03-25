@@ -30,13 +30,13 @@ public final class PropertiesFileSource extends PropertySource {
     @Override
     public Map<String, String> getProperties() {
         Properties properties = new Properties();
-        logInfo("Loading " + propertiesFilePath + "...");
         try (InputStream propertiesFileInputStream =
                      new FileInputStream(propertiesFilePath)) {
             properties.load(propertiesFileInputStream);
-            logInfo("...loaded successfully");
+            logInfo("Loading of " + propertiesFilePath + ": successful");
         } catch (IOException e) {
-            logWarning("...ignored: " + e.getMessage());
+            logWarning("Loading of " + propertiesFilePath
+                    + " ignored: " + e.getMessage());
         }
         return PropertyConverter.propertiesToMap(properties);
     }
