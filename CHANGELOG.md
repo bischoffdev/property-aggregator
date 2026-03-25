@@ -19,6 +19,11 @@ Back to [Readme](README.md).
 [1.1.0]: https://github.com/bischoffdev/property-aggregator/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/bischoffdev/property-aggregator/tree/v1.0.0
 
+## [1.6.0] - UNRELEASED
+
+### Changed
+* Updated dependencies
+
 ## [1.5.1] - 2026-01-07
 
 ### Changed

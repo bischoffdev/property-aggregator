@@ -62,6 +62,11 @@ All changes can be seen in the linked [changelog](CHANGELOG.md).
 
 # Usage
 
+## Examples
+
+See the full demo project in `examples/full-demo` for a runnable example
+that uses all available property sources.
+
 ## General usage
 
 ### Building a PropertyAggregator
@@ -147,6 +152,36 @@ PropertyAggregator propertyAggregator =
     .withPropertiesFileInClassPath(pathToProperties)
     .build();
 ```
+
+### Text files directory
+
+If you want to store values in individual text files (including multiline
+values), you can point the builder at a directory. Each filename must end with
+`.txt` and maps to a property key by stripping the suffix:
+
+```
+PropertyAggregator propertyAggregator =
+    new PropertyAggregator.Builder(true)
+    .withPropertyValuesFromTextFilesDirectory("/path/to/properties")
+    .build();
+```
+
+This example loads `/path/to/properties/my.key.txt` as the property
+`my.key` with the full file contents as the value.
+
+If you want a comma-separated list instead, use the mode enum:
+
+```
+PropertyAggregator propertyAggregator =
+    new PropertyAggregator.Builder(true)
+    .withPropertyValuesFromTextFilesDirectory(
+        "/path/to/properties",
+        TextFileValueMode.COMMA_JOIN_NON_EMPTY_LINES)
+    .build();
+```
+
+The `COMMA_JOIN_NON_EMPTY_LINES` mode trims each line, drops empty lines, and
+joins the remaining lines with commas.
 
 ## Specifying property hierarchies
 

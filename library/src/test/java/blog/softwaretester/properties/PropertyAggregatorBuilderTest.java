@@ -1,20 +1,18 @@
 package blog.softwaretester.properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import blog.softwaretester.properties.propertysource.TextFileValueMode;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public class PropertyAggregatorBuilderTest {
-
-    private static final Log LOGGER =
-            LogFactory.getLog(PropertyAggregatorBuilderTest.class);
 
     private static final String RESOURCES_DIR = "src/test/resources/";
 
@@ -144,14 +142,14 @@ public class PropertyAggregatorBuilderTest {
                         entry.getKey().startsWith("property");
         Map<String, String> properties =
                 propertyAggregator.getPropertiesWithCustomPredicate(predicate);
-        Assertions.assertEquals(3, properties.entrySet().size());
+        Assertions.assertEquals(3, properties.size());
 
         predicate = (Predicate<Map.Entry<String, String>>) entry ->
                 entry.getValue().endsWith("test2");
         properties =
                 propertyAggregator.getPropertiesWithCustomPredicate(predicate);
 
-        Assertions.assertEquals(2, properties.entrySet().size());
+        Assertions.assertEquals(2, properties.size());
     }
 
     @Test
@@ -185,5 +183,74 @@ public class PropertyAggregatorBuilderTest {
         new PropertyAggregator.Builder(true)
                 .withPropertiesFileInClassPath("invalid.properties")
                 .build();
+    }
+
+    @Test
+    public void validTextDirectoryRawMultiline() throws IOException {
+        Path directory = createTempDirectory();
+        writeFile(directory, "my.key.txt", "line1\nline2\nline3");
+
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
+                .withPropertyValuesFromTextFilesDirectory(directory.toString())
+                .build();
+
+        Assertions.assertEquals(
+                "line1\nline2\nline3",
+                propertyAggregator.getProperty("my.key"));
+    }
+
+    @Test
+    public void validTextDirectoryCommaJoin() throws IOException {
+        Path directory = createTempDirectory();
+        writeFile(directory, "list.values.txt", "a\n\n b \n c");
+
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
+                .withPropertyValuesFromTextFilesDirectory(
+                        directory.toString(),
+                        TextFileValueMode.COMMA_JOIN_NON_EMPTY_LINES)
+                .build();
+
+        Assertions.assertEquals(
+                "a,b,c",
+                propertyAggregator.getProperty("list.values"));
+    }
+
+    @Test
+    public void validTextDirectoryPrecedence() throws IOException {
+        Path directory = createTempDirectory();
+        writeFile(directory, "property1.txt", "from_text");
+
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
+                .withPropertiesFile(RESOURCES_DIR + "Test1.properties")
+                .withPropertyValuesFromTextFilesDirectory(directory.toString())
+                .build();
+
+        Assertions.assertEquals(
+                "from_text",
+                propertyAggregator.getProperty("property1"));
+    }
+
+    @Test
+    public void missingTextDirectoryIsIgnored() {
+        PropertyAggregator propertyAggregator = new PropertyAggregator.Builder(true)
+                .withPropertyValuesFromTextFilesDirectory("nonexistent-dir")
+                .build();
+
+        Assertions.assertEquals(0, propertyAggregator.getPropertiesCount());
+    }
+
+    private Path createTempDirectory() throws IOException {
+        Path directory = Files.createTempDirectory("property-aggregator-");
+        directory.toFile().deleteOnExit();
+        return directory;
+    }
+
+    private void writeFile(
+            final Path directory,
+            final String fileName,
+            final String content) throws IOException {
+        Path filePath = directory.resolve(fileName);
+        Files.writeString(filePath, content, StandardCharsets.UTF_8);
+        filePath.toFile().deleteOnExit();
     }
 }

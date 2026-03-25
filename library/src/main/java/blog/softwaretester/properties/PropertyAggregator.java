@@ -3,7 +3,9 @@ package blog.softwaretester.properties;
 import blog.softwaretester.properties.propertysource.EnvironmentPropertiesSource;
 import blog.softwaretester.properties.propertysource.PropertiesClassPathSource;
 import blog.softwaretester.properties.propertysource.PropertiesFileSource;
+import blog.softwaretester.properties.propertysource.PropertyTextFilesDirectorySource;
 import blog.softwaretester.properties.propertysource.SystemPropertiesSource;
+import blog.softwaretester.properties.propertysource.TextFileValueMode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -262,6 +264,41 @@ public final class PropertyAggregator {
                             propertiesFilePath, isLoggingEnabled);
 
             finalProperties.putAll(propertiesFileSource.getProperties());
+            return this;
+        }
+
+        /**
+         * Add a properties directory source to the queue. Each new property
+         * source added has a higher priority than the previous one.
+         * The directory is scanned non-recursively for .txt files where the
+         * filename (without suffix) is used as the property key.
+         *
+         * @param directoryPath The directory containing .txt files.
+         * @return The {@link PropertyAggregator}.
+         */
+        public Builder withPropertyValuesFromTextFilesDirectory(
+                final String directoryPath) {
+            return withPropertyValuesFromTextFilesDirectory(
+                    directoryPath, TextFileValueMode.RAW);
+        }
+
+        /**
+         * Add a properties directory source to the queue. Each new property
+         * source added has a higher priority than the previous one.
+         * The directory is scanned non-recursively for .txt files where the
+         * filename (without suffix) is used as the property key.
+         *
+         * @param directoryPath The directory containing .txt files.
+         * @param mode The text file parsing mode.
+         * @return The {@link PropertyAggregator}.
+         */
+        public Builder withPropertyValuesFromTextFilesDirectory(
+                final String directoryPath,
+                final TextFileValueMode mode) {
+            finalProperties.putAll(
+                    new PropertyTextFilesDirectorySource(
+                            directoryPath, mode, isLoggingEnabled)
+                            .getProperties());
             return this;
         }
 
