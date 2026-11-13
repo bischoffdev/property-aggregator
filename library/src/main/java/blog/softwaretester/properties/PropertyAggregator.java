@@ -31,6 +31,11 @@ public final class PropertyAggregator {
     private final Map<String, String> finalProperties;
 
     /**
+     * Winning source label per final property key.
+     */
+    private final Map<String, String> finalPropertySources;
+
+    /**
      * Private constructor that creates the {@link PropertyAggregator} using
      * the passed in builder.
      *
@@ -38,10 +43,13 @@ public final class PropertyAggregator {
      */
     private PropertyAggregator(final Builder builder) {
         Map<String, String> processedProperties = filterPropertyKeys(builder);
+        Map<String, String> processedSources = filterPropertySources(builder);
         processedProperties =
                 applyCustomPredicates(builder, processedProperties);
-        addDefaultValues(builder, processedProperties);
+        processedSources.keySet().retainAll(processedProperties.keySet());
+        addDefaultValues(builder, processedProperties, processedSources);
         finalProperties = processedProperties;
+        finalPropertySources = Collections.unmodifiableMap(processedSources);
     }
 
     /**
@@ -49,15 +57,18 @@ public final class PropertyAggregator {
      *
      * @param builder             The {@link Builder}.
      * @param processedProperties The processed properties including defaults.
+     * @param processedSources    The winning source per property key.
      */
     private void addDefaultValues(
             final Builder builder,
-            final Map<String, String> processedProperties) {
+            final Map<String, String> processedProperties,
+            final Map<String, String> processedSources) {
         // Process default values
         for (Map.Entry<String, String> entry
                 : builder.propertyDefaultValues.entrySet()) {
             if (!processedProperties.containsKey(entry.getKey())) {
                 processedProperties.put(entry.getKey(), entry.getValue());
+                processedSources.put(entry.getKey(), "default");
             }
         }
     }
@@ -106,6 +117,23 @@ public final class PropertyAggregator {
     }
 
     /**
+     * Filters property source labels to match {@link #filterPropertyKeys}.
+     *
+     * @param builder The {@link Builder}.
+     * @return The processed source labels.
+     */
+    private Map<String, String> filterPropertySources(final Builder builder) {
+        final Map<String, String> processedSources = new HashMap<>();
+        builder.propertySources.forEach((key, source) -> {
+            if (builder.filteredKeys.isEmpty()
+                || builder.filteredKeys.contains(key)) {
+                processedSources.put(key, source);
+            }
+        });
+        return processedSources;
+    }
+
+    /**
      * Get the value of a specific properties key.
      *
      * @param key The key of the property.
@@ -113,6 +141,23 @@ public final class PropertyAggregator {
      */
     public String getProperty(final String key) {
         return finalProperties.get(key);
+    }
+
+    /**
+     * Label of the layer that set the winning value for {@code key}.
+     * <p>
+     * Source labels for builder layers:
+     * {@code system}, {@code environment}, {@code file:}&lt;path&gt;,
+     * {@code classpath:}&lt;name&gt;, {@code textdir:}&lt;path&gt;.
+     * Keys added in {@link Builder#withDefaultValues} use {@code default}.
+     * </p>
+     *
+     * @param key The key of the property.
+     * @return The source label, or {@code null} if {@code key} is not in the
+     *         final map.
+     */
+    public String getPropertySource(final String key) {
+        return finalPropertySources.get(key);
     }
 
     /**
@@ -132,6 +177,16 @@ public final class PropertyAggregator {
      */
     public Map<String, String> getAllProperties() {
         return finalProperties;
+    }
+
+    /**
+     * Unmodifiable view of winning source labels. The key set matches
+     * {@link #getAllProperties()}.
+     *
+     * @return The source label per property key.
+     */
+    public Map<String, String> getAllPropertySources() {
+        return finalPropertySources;
     }
 
     /**
@@ -177,6 +232,12 @@ public final class PropertyAggregator {
                 new HashMap<>();
 
         /**
+         * Winning source label per merged property key from builder layers.
+         */
+        private final Map<String, String> propertySources =
+                new HashMap<>();
+
+        /**
          * The list of passed in predicates to filter the final list by.
          */
         private final List<Predicate<? super Map.Entry<String, String>>>
@@ -214,9 +275,10 @@ public final class PropertyAggregator {
          * @return The {@link PropertyAggregator}.
          */
         public Builder withSystemProperties() {
-            finalProperties.putAll(
+            mergeFromSource(
                     new SystemPropertiesSource(isLoggingEnabled)
-                            .getProperties());
+                            .getProperties(),
+                    "system");
             return this;
         }
 
@@ -227,9 +289,10 @@ public final class PropertyAggregator {
          * @return The {@link PropertyAggregator}.
          */
         public Builder withEnvironmentProperties() {
-            finalProperties.putAll(
+            mergeFromSource(
                     new EnvironmentPropertiesSource(isLoggingEnabled)
-                            .getProperties());
+                            .getProperties(),
+                    "environment");
             return this;
         }
 
@@ -244,7 +307,9 @@ public final class PropertyAggregator {
             PropertiesFileSource propertiesFileSource =
                     new PropertiesFileSource(
                             propertiesFilePath, isLoggingEnabled);
-            finalProperties.putAll(propertiesFileSource.getProperties());
+            mergeFromSource(
+                    propertiesFileSource.getProperties(),
+                    "file:" + propertiesFilePath);
             return this;
         }
 
@@ -263,7 +328,9 @@ public final class PropertyAggregator {
                     new PropertiesClassPathSource(
                             propertiesFilePath, isLoggingEnabled);
 
-            finalProperties.putAll(propertiesFileSource.getProperties());
+            mergeFromSource(
+                    propertiesFileSource.getProperties(),
+                    "classpath:" + propertiesFilePath);
             return this;
         }
 
@@ -295,11 +362,21 @@ public final class PropertyAggregator {
         public Builder withPropertyValuesFromTextFilesDirectory(
                 final String directoryPath,
                 final TextFileValueMode mode) {
-            finalProperties.putAll(
+            mergeFromSource(
                     new PropertyTextFilesDirectorySource(
                             directoryPath, mode, isLoggingEnabled)
-                            .getProperties());
+                            .getProperties(),
+                    "textdir:" + directoryPath);
             return this;
+        }
+
+        private void mergeFromSource(
+                final Map<String, String> layer,
+                final String sourceLabel) {
+            for (Map.Entry<String, String> entry : layer.entrySet()) {
+                finalProperties.put(entry.getKey(), entry.getValue());
+                propertySources.put(entry.getKey(), sourceLabel);
+            }
         }
 
         /**

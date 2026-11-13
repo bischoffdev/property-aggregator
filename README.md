@@ -35,6 +35,7 @@ _Simplify Java property handling and create a single source of truth!_
   - [Logging the final properties](#logging-the-final-properties)
   - [Checking the size of the final properties](#checking-the-size-of-the-final-properties)
   - [Retrieving all properties](#retrieving-all-properties)
+  - [Property source labels](#property-source-labels)
 - [Appendix](#appendix)
   - [Building](#building)
   - [License](#license)
@@ -340,6 +341,29 @@ property sources or defaults and are not filtered out:
 ```
 propertyAggregator.getAllProperties()
 ```
+
+## Property source labels
+
+After `build()`, each final property key has a winning source label (which
+layer set the value that survived filtering and defaults):
+
+| Builder layer | Source label |
+|---------------|--------------|
+| `withSystemProperties()` | `system` |
+| `withEnvironmentProperties()` | `environment` |
+| `withPropertiesFile(path)` | `file:` + path |
+| `withPropertiesFileInClassPath(name)` | `classpath:` + name |
+| `withPropertyValuesFromTextFilesDirectory(path)` | `textdir:` + path |
+| `withDefaultValues(...)` (only when the key was not set earlier) | `default` |
+
+```
+propertyAggregator.getPropertySource("property1")
+propertyAggregator.getAllPropertySources()
+```
+
+`getAllPropertySources()` returns an unmodifiable map whose keys match
+`getAllProperties()`. `getPropertySource(key)` returns `null` when the key is
+not in the final map.
 
 # Appendix
 

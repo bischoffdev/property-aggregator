@@ -10,6 +10,7 @@ and this project adheres to
 
 Back to [Readme](README.md).
 
+[1.7.0]: https://github.com/bischoffdev/property-aggregator/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/bischoffdev/property-aggregator/compare/v1.5.1...v1.6.0
 [1.5.1]: https://github.com/bischoffdev/property-aggregator/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/bischoffdev/property-aggregator/compare/v1.4.0...v1.5.0
@@ -19,6 +20,17 @@ Back to [Readme](README.md).
 [1.2.0]: https://github.com/bischoffdev/property-aggregator/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/bischoffdev/property-aggregator/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/bischoffdev/property-aggregator/tree/v1.0.0
+
+## [1.7.0] - 2026-03-26
+
+### Added
+* `getPropertySource` and `getAllPropertySources` to expose the winning source
+  label per final property key after merge, filtering, predicates, and defaults
+* Stable source labels: `system`, `environment`, `file:<path>`,
+  `classpath:<name>`, `textdir:<path>`, `default`
+
+### Changed
+* Updated Maven build plugins (enforcer, surefire, central-publishing)
 
 ## [1.6.0] - 2026-03-25
 
